@@ -1,33 +1,24 @@
 #pragma once
-#include "memory"
+#include <functional>
+#include <memory>
 #include <vector>
 #include <QColor>
-#include <functional>
-#include "randgen.h"
 
 class Datapoint
 {
 public:
-  Datapoint() = default;
-  Datapoint(size_t x, size_t y, std::vector<double> attributes, std::vector<Datapoint> physneighbors, std::vector<Datapoint> virneighbors, size_t culture);
-	/*inline void linkTo(const SimParameter& target) { _data = target._data; }*/
-  inline size_t x() const { return _x; }
-  inline size_t y() const { return _y; }
-  inline std::vector<double> attributes() const { return _attributes; }
-  inline std::vector<Datapoint> physneighbors() const { return _physneighbors; }
-  inline std::vector<Datapoint> virneighbors() const { return _virneighbors; }
-  inline size_t culture() const { return _culture; }
-	/*SimParameter& operator=(double value);
-	void onChanged(std::function<void(double)>);
-	inline SimParameter& operator+=(double rhs){ _data->_value += rhs; return *this; }*/
+	using attribute_t = uint64_t;
+	using culture_t = uint64_t;
+	Datapoint() = default;
+	Datapoint(std::vector<attribute_t> attributes, std::vector<Datapoint*> virneighbors, culture_t culture);
+	inline std::vector<attribute_t> & attributes() { return _attributes; }
+	inline std::vector<Datapoint*> & virneighbors() { return _virneighbors; }
+	inline culture_t culture() const { return _culture; }
+	inline culture_t & culture() { return _culture; }
 private:
-  size_t _x;
-  size_t _y;
-  std::vector<double> _attributes;
-  std::vector<Datapoint> _physneighbors;
-  std::vector<Datapoint> _virneighbors;
-  size_t _culture;
-  std::function<void(double)> onChanged;
+	std::vector<attribute_t> _attributes;
+	std::vector<Datapoint*> _virneighbors;
+	culture_t _culture;
 };
 
 class SimParameter
@@ -58,7 +49,7 @@ class Simulation						/* the parent class for all simulations */
 {
 public:
 	explicit Simulation(size_t width);					/* initializes a simulation */
-  virtual ~Simulation() = default;
+	virtual ~Simulation() = default;
 	virtual std::vector<SimParameter> parameters() { return {}; }
 														  /*virtual declarations of the functions that give us the name,
 														  animation delay(time between picture updates) and
@@ -79,8 +70,6 @@ public:
 	inline const std::vector<Datapoint>& data() const { return _data; }
 	inline std::vector<Datapoint>& data() { return _data; }					/* declaration of a function that calls data from the simulation */
 	inline size_t width() const { return _width; }							/* declares a function that returns the side length of a simulation */
-	inline size_t at(size_t i, size_t j) { return _data[i * _width + j].culture(); }	/* declares a function that can efficiently call data from the simulation, unlike data() */
-	inline std::vector<double> atAttr(size_t i, size_t j) { return _data[i * _width + j].attributes(); }
 	inline const Datapoint& at(size_t i, size_t j) const { return _data[i * _width + j]; }
 	inline Datapoint& atNum(size_t num) { return _data[num]; }
 	inline const Datapoint& atNum(size_t num) const { return _data[num]; }
@@ -89,7 +78,6 @@ public:
 	void reconnect(uint8_t ctype);
 	std::vector<std::vector<size_t>> _neighborList;
 private:
-	RandomGenerator rng{1};
 	std::vector<Datapoint> _data; /*declaration of the vector that records the data of the simulation*/
 	std::vector<QColor> _palette; /* declaration of the color table */
 	size_t _width;				/* declaration of size length of the simulation */

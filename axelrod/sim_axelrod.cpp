@@ -1,9 +1,10 @@
 #include "sim_axelrod.h"
+#include <random>
 
 /* UC stands for user-controlled, modify the values in these rows to tailor the simulation to your needs */
 
-Sim_Axelrod::Sim_Axelrod(size_t width) : Simulation(width), data2(width * width)
-
+Sim_Axelrod::Sim_Axelrod(size_t width)
+	: Simulation(width)
 {	/* upon the creation of an object of this class, the following happens: */
 
 	palette().push_back((240, 100, 100));		/* UC: defines the color table, colors can be given in many formats, see the documentation of QColor if the current one(hexadecimal) is not sufficient */
@@ -51,31 +52,40 @@ std::string Sim_Axelrod::getName() const
 
 void Sim_Axelrod::step()		/* defines a simulation step */
 {
-	//#pragma omp parallel for
-	/*for (size_t i = 0; i < width(); i++) {
-	 *	for (size_t j = 0; j < width(); j++) {
-		if (random.real() < 1){
-			if (random.real() < virint){
-			auto neighbor = _neighborList[player(i, j)][rng.next() % _neighborList[player(i, j)].size()];
-
-			for
+	#pragma omp parallel default(none)
+	{
+		thread_local std::mt19937_64 rng(std::random_device{}());
+		std::uniform_real_distribution<double> realDist(0, 1);
+		#pragma omp parallel for
+		for (size_t i = 0; i < width(); i++)
+		{
+			for (size_t j = 0; j < width(); j++)
+			{
+				if (realDist(rng) < 1)
+				{
+					if (realDist(rng) < virint)
+					{
+						std::uniform_int_distribution<uint64_t> sizeDist(0, _neighborList[player(i, j)].size());
+						auto neighbor = _neighborList[player(i, j)][sizeDist(rng)];
+					}
+				}
 			}
-			}
-			}
-
-	}*/
+		}
+	}
 }
 
 void Sim_Axelrod::reset()		/* creates a specific strategy distribution across the grid */
 {
+	thread_local std::mt19937_64 rng(std::random_device{}());
+	std::uniform_int_distribution<uint64_t> dist(0, static_cast<uint64_t>(q.value()));
 	for (size_t ix = 0; ix < width(); ix++) /* random strategy distribution */
-		for (size_t jx = 0; jx < width(); jx++){
-			for (uint8_t index = 0; index < F; index++ )
-				atAttr(ix, jx).push_back( rand() % q.value() );
+		for (size_t jx = 0; jx < width(); jx++)
+		{
+			for (uint8_t index = 0; index < F; index++)
+				at(ix, jx).attributes().push_back(dist(rng));
 			at(ix, jx) = 0;
-			for (size_t j = 0; j < F; j++){
-				at(ix, jx) += atAttr(ix, jx)[j] * q;
-			}
+			for (size_t j = 0; j < F; j++)
+				at(ix, jx).culture() += at(ix, jx).attributes()[j] * static_cast<Datapoint::attribute_t>(q);
 		}
 }
 

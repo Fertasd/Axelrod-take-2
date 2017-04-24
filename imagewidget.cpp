@@ -53,7 +53,7 @@ void ImageWidget::paintEvent(QPaintEvent*)		/* defines what happens when the dis
 				//for (size_t j = 0; j < _simulation->displayWidth(); ++j)
 				for (int j = 0; j < static_cast<int>(std::min(_simulation->width(), _simulation->displayWidth())); ++j)
 				{
-					painter.fillRect(j*step + square.x(), i*step + square.y(), step, step,_simulation->palette()[_simulation->at(i,j)]);
+					painter.fillRect(j*step + square.x(), i*step + square.y(), step, step,_simulation->palette()[_simulation->at(i,j).culture() % _simulation->palette().size()]);
 				}
 			}
 			break;
@@ -63,10 +63,10 @@ void ImageWidget::paintEvent(QPaintEvent*)		/* defines what happens when the dis
 				for (int j = 0; j < static_cast<int>(std::min(_simulation->width(), _simulation->displayWidth())); ++j)
 				{
 					if (i % 2 == 0) {
-						painter.fillRect(j*step + square.x(), i*step + square.y(), step, step,_simulation->palette()[_simulation->at(i,j)]);
+						painter.fillRect(j*step + square.x(), i*step + square.y(), step, step,_simulation->palette()[_simulation->at(i,j).culture() % _simulation->palette().size()]);
 					}
 					else {
-						painter.fillRect(j*step + square.x() + step / 2, i*step + square.y(), step, step,_simulation->palette()[_simulation->at(i,j)]);
+						painter.fillRect(j*step + square.x() + step / 2, i*step + square.y(), step, step,_simulation->palette()[_simulation->at(i,j).culture() % _simulation->palette().size()]);
 					}
 				}
 			}
@@ -77,7 +77,7 @@ void ImageWidget::paintEvent(QPaintEvent*)		/* defines what happens when the dis
 				//for (size_t j = 0; j < _simulation->displayWidth(); ++j)
 				for (int j = 0; j < static_cast<int>(std::min(_simulation->width(), _simulation->displayWidth())); ++j)
 				{
-					painter.fillRect(j*step + square.x(), i*step + square.y(), step, step,_simulation->palette()[_simulation->at(i,j)]);
+					painter.fillRect(j*step + square.x(), i*step + square.y(), step, step,_simulation->palette()[_simulation->at(i,j).culture() % _simulation->palette().size()]);
 				}
 			}
 			break;

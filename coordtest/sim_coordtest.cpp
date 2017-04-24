@@ -63,8 +63,6 @@ uint8_t Sim_coordtest::connectionType() const
 
 void Sim_coordtest::step()		/* defines a simulation step */
 {
-	 //altstep();
-
 }
 
 

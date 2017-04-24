@@ -1,6 +1,5 @@
 #pragma once
 #include "simulation.h"
-#include "randgen.h"
 
 /* UC stands for user-controlled, modify the values in these rows to tailor the simulation to your needs */
 
@@ -29,7 +28,6 @@ public:
 														  allowing them to return values specific to
 														  this kind of simulation */
 private:
-	RandomGenerator rng;															/* initializes a random number generator */
 	static constexpr uint8_t Ns = 4;												/* UC: number of species               */
 	const SimParameter Px{"Px", 0.1, "Exchange rate between neutral pairs"};		/* USEFUL! This is how a parameter is defined: SimParameter parameter{"Parameter name", parameter value, "Parameter description"} */
 	std::vector<uint8_t> data2;														/* declaration of a temporary structure that keeps track changes in a step */

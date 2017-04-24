@@ -14,7 +14,6 @@ SOURCES += main.cpp\
     imagewidget.cpp \
     simulationmanager.cpp \
     simulationsession.cpp \
-    randgen.cpp \
     simparameterwidget.cpp \
     LV4s1a/sim_lv4s1a.cpp \
     coordtest/sim_coordtest.cpp \
@@ -25,7 +24,6 @@ SOURCES += main.cpp\
     axelrod/sim_axelrod.cpp
 
 HEADERS  += \
-    randgen.h \
     simulation.h \
     mainwindow.h \
     imagewidget.h \

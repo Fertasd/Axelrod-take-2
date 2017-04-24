@@ -1,6 +1,5 @@
 #pragma once
 #include "simulation.h"
-#include "randgen.h"
 
 /* UC stands for user-controlled, modify the values in these rows to tailor the simulation to your needs */
 
@@ -27,7 +26,6 @@ public:
 	size_t stepTargetNumber() const override;			// declarations of overrides to these functions,
 	size_t returnSpecies() override;
 private:
-	RandomGenerator rng{1};								 /* initializes a random number generator */
 	static constexpr uint8_t Ns = 2;					 /* UC: number of species/strategies               */
 	SimParameter cop{"CoP", 1.0, "coordination payoff"}; /* USEFUL! This is how a parameter is defined: SimParameter parameter{"Parameter name", parameter value, "Parameter description"} */
 	SimParameter crp{"CrP", 0.5, "cross-dependent payoff"};

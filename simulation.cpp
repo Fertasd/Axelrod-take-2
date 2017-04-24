@@ -3,8 +3,8 @@
 
 #include "simulation.h"
 
-Datapoint::Datapoint(size_t x, size_t y, std::vector<double> attributes, std::vector<Datapoint> physneighbors, std::vector<Datapoint> virneighbors, size_t culture)
-  : _x(x), _y(y), _attributes(std::move(attributes)), _physneighbors(std::move(physneighbors)), _virneighbors(std::move(virneighbors)), _culture(culture)
+Datapoint::Datapoint(std::vector<attribute_t> attributes, std::vector<Datapoint*> virneighbors, culture_t culture)
+	: _attributes(std::move(attributes)), _virneighbors(std::move(virneighbors)), _culture(culture)
 { }
 
 SimParameter::Data::Data(const QString &name, double value, const QString &description)
@@ -33,6 +33,9 @@ Simulation::Simulation(size_t width) : _data(width * width), _width(width)
 
 void Simulation::reconnect(uint8_t ctype)
 {
+	std::mt19937_64 rng(std::random_device{}());
+	std::uniform_int_distribution<uint64_t> dist;
+
 	std::vector<std::vector<size_t>> tempList;
 	for (size_t in = 0; in < width() * width(); in++)
 		tempList.push_back({});
@@ -140,11 +143,11 @@ void Simulation::reconnect(uint8_t ctype)
 				if (availableList.size() < 2) {
 					break;
 				}
-				auto rand = rng.next() % availableList.size();
+				auto rand = dist(rng) % availableList.size();
 				auto chosen = availableList[rand];
-				auto rand2 = rng.next() % availableList.size();
+				auto rand2 = dist(rng) % availableList.size();
 				while (rand2 == rand) {
-					rand2 = rng.next() % availableList.size();
+					rand2 = dist(rng) % availableList.size();
 				}
 				auto chosen2 = availableList[rand2];
 				//if (_neighborList[chosen].size() < 4)
@@ -161,4 +164,4 @@ void Simulation::reconnect(uint8_t ctype)
 			}			
 			break;
 		}
-	}
+}
