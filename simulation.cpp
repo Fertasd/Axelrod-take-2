@@ -3,35 +3,17 @@
 
 #include "simulation.h"
 
-Datapoint::Data::Data(size_t &x, size_t &y, std::vector<uint8_t> &attributes, std::vector<Datapoint> &physneighbors, std::vector<Datapoint> &virneighbors, size_t &culture)
-	: _x(x), _y(y), _attributes(attributes), _physneighbors(physneighbors), _virneighbors(virneighbors), _culture(culture)
-{
-
-}
-
-Datapoint::Datapoint(size_t &x, size_t &y, std::vector<uint8_t> &attributes, std::vector<Datapoint> &physneighbors, std::vector<Datapoint> &virneighbors, size_t &culture)
-	: _data(std::make_shared<Data>(x, y, attributes, physneighbors, virneighbors, culture))
-{
-
-}
-
-Datapoint::Datapoint()
-	: _data(std::make_shared<Data>(x, y, attributes, physneighbors, virneighbors, culture))
-{
-
-}
-
+Datapoint::Datapoint(size_t x, size_t y, std::vector<uint8_t> attributes, std::vector<Datapoint> physneighbors, std::vector<Datapoint> virneighbors, size_t culture)
+  : _x(x), _y(y), _attributes(std::move(attributes)), _physneighbors(std::move(physneighbors)), _virneighbors(std::move(virneighbors)), _culture(culture)
+{ }
 
 SimParameter::Data::Data(const QString &name, double value, const QString &description)
 	: _name(name), _value(value), _description(description)
-{
-
-}
+{ }
 
 SimParameter::SimParameter(const QString& name, double value, const QString &description)
 	: _data(std::make_shared<Data>(name, value, description))
-{
-}
+{ }
 
 SimParameter &SimParameter::operator=(double value)
 {
@@ -47,13 +29,7 @@ void SimParameter::onChanged(std::function<void (double)> func)
 }
 
 Simulation::Simulation(size_t width) : _data(width * width), _width(width)
-{
-
-}
-
-Simulation::~Simulation()
-{
-}
+{ }
 
 void Simulation::reconnect(uint8_t ctype)
 {

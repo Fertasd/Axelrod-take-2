@@ -7,32 +7,27 @@
 
 class Datapoint
 {
-	struct Data
-	{
-		Data(size_t &x, size_t &y, std::vector<uint8_t> &attributes, std::vector<Datapoint> &physneighbors, std::vector<Datapoint> &virneighbors, size_t &culture);
-		size_t _x;
-		size_t _y;
-		std::vector<uint8_t> _attributes;
-		std::vector<Datapoint> _physneighbors;
-		std::vector<Datapoint> _virneighbors;
-		size_t _culture;
-		std::function<void(double)> onChanged;
-	};
 public:
-	Datapoint(size_t &x, size_t &y, std::vector<uint8_t> &attributes, std::vector<Datapoint> &physneighbors, std::vector<Datapoint> &virneighbors, size_t &culture);
-	Datapoint();
+  Datapoint() = default;
+  Datapoint(size_t x, size_t y, std::vector<uint8_t> attributes, std::vector<Datapoint> physneighbors, std::vector<Datapoint> virneighbors, size_t culture);
 	/*inline void linkTo(const SimParameter& target) { _data = target._data; }*/
-	inline const size_t x() const { return _data->_x; }
-	inline const size_t y() const { return _data->_y; }
-	inline  std::vector<uint8_t> attributes() const { return _data->_attributes; }
-	inline  std::vector<Datapoint> physneighbors() const { return _data->_physneighbors; }
-	inline  std::vector<Datapoint> virneighbors() const { return _data->_virneighbors; }
-	inline  size_t culture() const { return _data->_culture; }
+  inline size_t x() const { return _x; }
+  inline size_t y() const { return _y; }
+  inline std::vector<uint8_t> attributes() const { return _attributes; }
+  inline std::vector<Datapoint> physneighbors() const { return _physneighbors; }
+  inline std::vector<Datapoint> virneighbors() const { return _virneighbors; }
+  inline size_t culture() const { return _culture; }
 	/*SimParameter& operator=(double value);
 	void onChanged(std::function<void(double)>);
 	inline SimParameter& operator+=(double rhs){ _data->_value += rhs; return *this; }*/
 private:
-	std::shared_ptr<Data> _data;
+  size_t _x;
+  size_t _y;
+  std::vector<uint8_t> _attributes;
+  std::vector<Datapoint> _physneighbors;
+  std::vector<Datapoint> _virneighbors;
+  size_t _culture;
+  std::function<void(double)> onChanged;
 };
 
 class SimParameter
@@ -63,7 +58,7 @@ class Simulation						/* the parent class for all simulations */
 {
 public:
 	explicit Simulation(size_t width);					/* initializes a simulation */
-	virtual ~Simulation();
+  virtual ~Simulation() = default;
 	virtual std::vector<SimParameter> parameters() { return {}; }
 														  /*virtual declarations of the functions that give us the name,
 														  animation delay(time between picture updates) and
