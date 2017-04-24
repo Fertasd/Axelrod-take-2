@@ -1,10 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-06-03T09:18:36
-#
-#-------------------------------------------------
-
-QT       += core gui widgets
+QT += core gui widgets
 CONFIG += c++14
 
 TARGET = simulation
