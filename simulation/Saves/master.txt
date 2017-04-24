@@ -1,0 +1,4 @@
+save_coordtest1CoP1-0.08SeP-0.080.5CrP0.55StartSelect50.3Temp0.3ID2127349688.txt
+save_tox2x1StartSelect10.066Px0.0661alfa1ID2128442865.txt
+save_tox2x1StartSelect10.046Px0.0461alfa1ID2129131913.txt
+save_coordtest1CoP1-0.01SeP-0.010.5CrP0.55StartSelect50.3Temp0.3ID2129665384.txt
