@@ -15,7 +15,11 @@ Datapoint::Datapoint(size_t &x, size_t &y, std::vector<uint8_t> &attributes, std
 
 }
 
+Datapoint::Datapoint()
+	: _data(std::make_shared<Data>(x, y, attributes, physneighbors, virneighbors, culture))
+{
 
+}
 
 
 SimParameter::Data::Data(const QString &name, double value, const QString &description)

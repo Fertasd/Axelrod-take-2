@@ -20,6 +20,7 @@ class Datapoint
 	};
 public:
 	Datapoint(size_t &x, size_t &y, std::vector<uint8_t> &attributes, std::vector<Datapoint> &physneighbors, std::vector<Datapoint> &virneighbors, size_t &culture);
+	Datapoint();
 	/*inline void linkTo(const SimParameter& target) { _data = target._data; }*/
 	inline const size_t x() const { return _data->_x; }
 	inline const size_t y() const { return _data->_y; }
