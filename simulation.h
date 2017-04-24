@@ -9,11 +9,11 @@ class Datapoint
 {
 public:
   Datapoint() = default;
-  Datapoint(size_t x, size_t y, std::vector<uint8_t> attributes, std::vector<Datapoint> physneighbors, std::vector<Datapoint> virneighbors, size_t culture);
+  Datapoint(size_t x, size_t y, std::vector<double> attributes, std::vector<Datapoint> physneighbors, std::vector<Datapoint> virneighbors, size_t culture);
 	/*inline void linkTo(const SimParameter& target) { _data = target._data; }*/
   inline size_t x() const { return _x; }
   inline size_t y() const { return _y; }
-  inline std::vector<uint8_t> attributes() const { return _attributes; }
+  inline std::vector<double> attributes() const { return _attributes; }
   inline std::vector<Datapoint> physneighbors() const { return _physneighbors; }
   inline std::vector<Datapoint> virneighbors() const { return _virneighbors; }
   inline size_t culture() const { return _culture; }
@@ -23,7 +23,7 @@ public:
 private:
   size_t _x;
   size_t _y;
-  std::vector<uint8_t> _attributes;
+  std::vector<double> _attributes;
   std::vector<Datapoint> _physneighbors;
   std::vector<Datapoint> _virneighbors;
   size_t _culture;
@@ -79,7 +79,8 @@ public:
 	inline const std::vector<Datapoint>& data() const { return _data; }
 	inline std::vector<Datapoint>& data() { return _data; }					/* declaration of a function that calls data from the simulation */
 	inline size_t width() const { return _width; }							/* declares a function that returns the side length of a simulation */
-	inline Datapoint& at(size_t i, size_t j) { return _data[i * _width + j]; }	/* declares a function that can efficiently call data from the simulation, unlike data() */
+	inline size_t at(size_t i, size_t j) { return _data[i * _width + j].culture(); }	/* declares a function that can efficiently call data from the simulation, unlike data() */
+	inline std::vector<double> atAttr(size_t i, size_t j) { return _data[i * _width + j].attributes(); }
 	inline const Datapoint& at(size_t i, size_t j) const { return _data[i * _width + j]; }
 	inline Datapoint& atNum(size_t num) { return _data[num]; }
 	inline const Datapoint& atNum(size_t num) const { return _data[num]; }

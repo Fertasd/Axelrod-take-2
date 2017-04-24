@@ -124,7 +124,7 @@ QString SimulationSession::snapshot()
 	return QString::fromStdString(epsnev);
 }
 
-QString SimulationSession::save()
+/*QString SimulationSession::save()
 {
 	auto filename =  std::string("save_");
 	filename.append(_simulation->getName());
@@ -200,7 +200,7 @@ QString SimulationSession::save()
 	fprintf(tf2, filend);
 	fprintf(tf2, "\n");
 	fflush(tf2);
-	fclose(tf2);*/
+	fclose(tf2);
 
 	ofstream infile;
 	infile.open("C:/Users/Matyas/Documents/simulationNew/simulation/Saves/master.txt", std::ios_base::app);
@@ -213,11 +213,11 @@ QString SimulationSession::save()
 	infile << filend;
 	infile << "\n";
 	infile << filend;
-	infile.close();*/
+	infile.close();
 	return QString::fromStdString(filename);
-}
+}*/
 
-void SimulationSession::load(std::string fileName)
+/*void SimulationSession::load(std::string fileName)
 {
 	ifstream infile;
 	std::string baseString = "C:/Users/Matyas/Documents/simulationNew/simulation/Saves/";
@@ -246,7 +246,7 @@ void SimulationSession::load(std::string fileName)
 	}
 
 
-}
+}*/
 
 size_t SimulationSession::getIndex(std::string fileName)
 {

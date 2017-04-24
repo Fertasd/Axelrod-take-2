@@ -3,7 +3,7 @@
 
 #include "simulation.h"
 
-Datapoint::Datapoint(size_t x, size_t y, std::vector<uint8_t> attributes, std::vector<Datapoint> physneighbors, std::vector<Datapoint> virneighbors, size_t culture)
+Datapoint::Datapoint(size_t x, size_t y, std::vector<double> attributes, std::vector<Datapoint> physneighbors, std::vector<Datapoint> virneighbors, size_t culture)
   : _x(x), _y(y), _attributes(std::move(attributes)), _physneighbors(std::move(physneighbors)), _virneighbors(std::move(virneighbors)), _culture(culture)
 { }
 
