@@ -150,29 +150,6 @@ MainWindow::MainWindow(QWidget *parent)
 		}
 	}); /* connects the clicked() event of the reset button with a series of events: the timer stops, the simulation is reset and displayed */
 
-	connect(picButton, &QPushButton::clicked, [=]{
-		if (session.simulation()) {
-			shouldSimulate = false;
-			timer->stop();
-			auto retname = session.snapshot();
-			QString retString = "Snapshot ";
-			retString.append(retname);
-			retString.append(" created");
-			QMessageBox(QMessageBox::Information, "Event", retString).exec();
-		}
-	});
-
-	connect(saveButton, &QPushButton::clicked, [=]{
-		if (session.simulation()) {
-			shouldSimulate = false;
-			timer->stop();
-			auto retname2 = session.save();
-			QString retString2 = "Save ";
-			retString2.append(retname2);
-			retString2.append(" created");
-			QMessageBox(QMessageBox::Information, "Event", retString2).exec();
-		}
-	});
 
 	auto* saveList = new QListView;
 	buttonLayout->addWidget(saveList);
@@ -195,7 +172,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 		session.simulation(sim);
 		QApplication::processEvents();
-		session.load(saveManager.getSimName(static_cast<size_t>(current.row())));
 	});
 
 	connect(loadButton, &QPushButton::clicked, [=]{

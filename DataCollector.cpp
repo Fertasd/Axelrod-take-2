@@ -2,6 +2,7 @@
 #include <chrono>
 #include <iomanip>
 #include <string>
+#include <unordered_set>
 #include <QMessageBox>
 #include <QProgressBar>
 #include <QtWidgets>
@@ -58,54 +59,19 @@ void DataCollector::collectData()
 	retString.append(date2);
 	retString.append(".dat");
 	std::ofstream f(retString);
-	f << _param.name().toStdString();
-	for (size_t i = 0; i < _simulation->returnSpecies(); i++) {
-		auto string = QString("Strategy");
-		string.append(QString::number(i + 1));
-		f << std::setw(12) << string.toStdString();
-	}
 	f << "\n";
 
-	std::vector<size_t> results(_simulation->returnSpecies());
-	auto* changeTracker = new QProgressBar;
-	changeTracker->setMinimum(0);
-	changeTracker->setMaximum((abs(_endpoint - _startpoint) / _step) + 1);
-
-	auto* stepTracker = new QProgressBar;
-	stepTracker->setMinimum(1);
-	stepTracker->setMaximum(_maxSteps + _therm - 1);
-	for (double i = _startpoint; i < _endpoint + _step; i += _step){
-
-		_param = i;		//your code goes here hopefully
-
-		for (size_t i = 0; i < results.size(); i++)
-				results[i] = 0;
-		_simulation->reset();
-		stepTracker->reset();
-		for (size_t step = 1; step < static_cast<size_t>(_maxSteps + _therm); step++){
-
-			stepTracker->setValue(stepTracker->value() + 1);
-			stepTracker->show();
-			QApplication::processEvents();
-			_simulation->step();
-			if (step > static_cast<size_t>(_therm)){
-
-			}
-		}
-		for (size_t i = 0; i < _simulation->width(); i++)
-			for (size_t j = 0; j < _simulation->width(); j++)
-				results[_simulation->at(i,j)] += 1;
-
-		f << _param;
-		for(size_t i = 0; i < _simulation->returnSpecies(); i++)
-		{
-			f << std::setw(12) << static_cast<double>(results[i]) / (_simulation->width() * _simulation->width());
-		}
-
-		f << "\n";
+	std::unordered_set<Datapoint::culture_t> results;
+	_simulation->reset();
+	while(_simulation->live()){
 		QApplication::processEvents();
-		changeTracker->setValue(changeTracker->value() + 1);
-		changeTracker->show();
-
-	 }
+		_simulation->step();
+	}
+	for (size_t i = 0; i < _simulation->width(); i++)
+		for (size_t j = 0; j < _simulation->width(); j++)
+			results.insert(_simulation->at(i,j).culture());
+	/*std::string stringy = static_cast<std::string>(results.size());
+	chary = char(stringy);*/
+	f << "\n";
+	QApplication::processEvents();
 }

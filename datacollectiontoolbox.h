@@ -6,7 +6,6 @@
 #include "simulation.h"
 #include "DataCollector.h"
 #include "DataCollector.h"
-#include "Bisector.h"
 
 class DataCollectionToolbox : public QWidget
 {
@@ -20,5 +19,4 @@ private:
 	std::shared_ptr<Simulation> _simulation;
 	std::shared_ptr<QMainWindow> _window = std::make_shared<QMainWindow>();
 	DataCollector* collector;
-	Bisector* bisector;
 };
