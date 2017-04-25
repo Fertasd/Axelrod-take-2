@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(&session, &SimulationSession::connectionTypeChanged, [=](size_t ctype){
 		shouldSimulate = false;
 		timer->stop();
-		session.simulation()->reconnect(ctype);
+		//session.simulation()->reconnect(ctype);
 		image->setConnectionType(ctype);
 		image->update();
 	});

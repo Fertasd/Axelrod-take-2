@@ -25,6 +25,8 @@ public:
 	void reset() override;
 	size_t stepTargetNumber() const override;			// declarations of overrides to these functions,
 	size_t returnSpecies() override;
+	size_t live() override;
+
 private:
 	static constexpr uint8_t Ns = 2;					 /* UC: number of species/strategies               */
 	SimParameter cop{"CoP", 1.0, "coordination payoff"}; /* USEFUL! This is how a parameter is defined: SimParameter parameter{"Parameter name", parameter value, "Parameter description"} */

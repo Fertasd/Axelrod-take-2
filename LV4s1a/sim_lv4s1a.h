@@ -24,6 +24,7 @@ public:
 	void step() override;
 	void reset() override;
 	size_t returnSpecies() override;
+	size_t live() override;
 	size_t stepTargetNumber() const override;		/* declarations of overrides to these functions,
 														  allowing them to return values specific to
 														  this kind of simulation */

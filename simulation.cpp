@@ -8,6 +8,24 @@ Datapoint::Datapoint(std::vector<attribute_t> attributes, std::vector<Datapoint*
 	: _attributes(std::move(attributes)), _virneighbors(std::move(virneighbors)), _culture(culture)
 { }
 
+std::pair<Datapoint::attribute_t, std::vector<Datapoint::attribute_t> > Datapoint::overlap(Datapoint* target, Datapoint* neighbor)
+{
+	attribute_t overlapy = 0;
+	std::vector<Datapoint::attribute_t> locations;
+	for (attribute_t index = 0; index < target->attributes().size(); index++){
+		if (target->attributes()[index] == neighbor->attributes()[index]){
+			overlapy += 1;
+		}
+		else {
+			locations.push_back(index);
+		}
+	}
+	std::pair<Datapoint::attribute_t, std::vector<Datapoint::attribute_t> > retpair;
+	retpair.first = overlapy;
+	retpair.second = locations;
+	return retpair;
+}
+
 SimParameter::Data::Data(const QString &name, double value, const QString &description)
 	: _name(name), _value(value), _description(description)
 { }
@@ -32,7 +50,7 @@ void SimParameter::onChanged(std::function<void (double)> func)
 Simulation::Simulation(size_t width) : _data(width * width), _width(width)
 { }
 
-void Simulation::reconnect(uint8_t ctype)
+/*void Simulation::reconnect(uint8_t ctype)
 {
 	std::mt19937_64 rng(std::random_device{}());
 	std::uniform_int_distribution<uint64_t> dist;
@@ -53,7 +71,7 @@ void Simulation::reconnect(uint8_t ctype)
 			}
 
 			nov[width() - 1] = 0;
-			csok[0] = width() - 1;		/* the index-resolving vectors get defined */
+			csok[0] = width() - 1;
 			for (size_t i = 0; i < width(); i++){
 				for (size_t j = 0; j < width(); j++){
 					_neighborList[player(i, j)][0] = player(i, nov[j]);
@@ -130,7 +148,7 @@ void Simulation::reconnect(uint8_t ctype)
 						_neighborList[player1][3] = player(iu, ju);
 					}
 				}
-			}                                       /* triangle lattice joints  */
+			}
 			break;
 		case 2:
 			std::vector<size_t> availableList;
@@ -165,4 +183,4 @@ void Simulation::reconnect(uint8_t ctype)
 			}			
 			break;
 		}
-}
+}*/

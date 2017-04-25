@@ -72,6 +72,11 @@ size_t Sim_LV4s1a::returnSpecies()
 	return Ns;
 }
 
+size_t Sim_LV4s1a::live()
+{
+
+}
+
 size_t Sim_LV4s1a::stepTargetNumber() const
 {
 	return 5000;		/* returns the maximum number of steps, currently unused */

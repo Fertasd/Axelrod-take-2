@@ -20,13 +20,15 @@ public:
 	void step() override;
 	void reset() override;
 	size_t returnSpecies() override;
-	size_t stepTargetNumber() const override;		/* declarations of overrides to these functions,
-														  allowing them to return values specific to
-														  this kind of simulation */
+	size_t stepTargetNumber() const override;
+	size_t live() override;
+	inline void setlive(size_t input) { _live = input; }
+
 private:
 	static constexpr uint8_t Ns = 4;												/* UC: number of species               */
 	const SimParameter Px{"Px", 0.1, "Exchange rate between neutral pairs"};		/* USEFUL! This is how a parameter is defined: SimParameter parameter{"Parameter name", parameter value, "Parameter description"} */
 	const SimParameter F{"F", 3, "Number of features"};
 	const SimParameter q{"q", 8, "Number of traits per feature"};
-	const SimParameter virint{"virint", 0.36, "Probability of virtual interaction"};
+	const SimParameter virint{"virint", 0, "Probability of virtual interaction"};
+	size_t _live = 0;
 };

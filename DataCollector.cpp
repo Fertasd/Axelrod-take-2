@@ -63,7 +63,7 @@ void DataCollector::collectData()
 
 	std::unordered_set<Datapoint::culture_t> results;
 	_simulation->reset();
-	while(_simulation->live()){
+	while(_simulation->live() > 0){
 		QApplication::processEvents();
 		_simulation->step();
 	}

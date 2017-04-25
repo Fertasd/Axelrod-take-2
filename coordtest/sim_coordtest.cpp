@@ -81,3 +81,8 @@ size_t Sim_coordtest::returnSpecies()
 {
 	return Ns;
 }
+
+size_t Sim_coordtest::live()
+{
+
+}

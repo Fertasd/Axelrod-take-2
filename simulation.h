@@ -19,6 +19,7 @@ public:
 	inline culture_t & culture() { return _culture; }
 	inline void set_culture(culture_t input) { _culture = input; }
 	inline void push_attribute(attribute_t input) { _attributes.push_back(input); }
+	std::pair<attribute_t, std::vector<attribute_t>> overlap(Datapoint* target, Datapoint* neighbor);
 private:
 	std::vector<attribute_t> _attributes;
 	std::vector<Datapoint*> _virneighbors;
@@ -69,23 +70,21 @@ public:
 	virtual void reset() = 0;
 	virtual size_t stepTargetNumber() const = 0;		/* virtually declares maximum number of steps run, currently unused */
 	virtual size_t returnSpecies() = 0;
+	virtual size_t live() = 0;
 	inline const std::vector<QColor>& palette() const { return _palette; }
 	inline std::vector<QColor>& palette() { return _palette; }				/* declaration of the function that calls the color table */
 	inline const std::vector<Datapoint>& data() const { return _data; }
 	inline std::vector<Datapoint>& data() { return _data; }					/* declaration of a function that calls data from the simulation */
 	inline size_t width() const { return _width; }							/* declares a function that returns the side length of a simulation */
-	inline bool live() { return _live; }
 	inline const Datapoint& at(size_t i, size_t j) const { return _data[i * _width + j]; }
 	inline Datapoint& at(size_t i, size_t j) { return _data[i * _width + j]; }
 	inline Datapoint& atNum(size_t num) { return _data[num]; }
 	inline const Datapoint& atNum(size_t num) const { return _data[num]; }
-	inline size_t player(size_t i, size_t j) { return i * _width + j; }
 	SimParameter startselect{"StartSelect", 1, "Initial configuration. 1: random 2: interface 3: interfaces 4: island 5: island 6: empty 7: tilted interface 8: tilted interfaces"}; /*this is used to choose the initial state*/
-	void reconnect(uint8_t ctype);
+	//void reconnect(uint8_t ctype);
 	std::vector<std::vector<size_t>> _neighborList;
 private:
 	std::vector<Datapoint> _data; /*declaration of the vector that records the data of the simulation*/
 	std::vector<QColor> _palette; /* declaration of the color table */
 	size_t _width;				/* declaration of size length of the simulation */
-	bool _live;
 };
