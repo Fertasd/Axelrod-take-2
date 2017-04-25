@@ -12,8 +12,9 @@ public:
 	Datapoint() = default;
 	Datapoint(std::vector<attribute_t> attributes, std::vector<Datapoint*> virneighbors, culture_t culture);
 	inline std::vector<attribute_t> & attributes() { return _attributes; }
-	inline std::vector<attribute_t> attributes() const { return _attributes; }
+	inline std::vector<attribute_t> const & attributes() const { return _attributes; }
 	inline std::vector<Datapoint*> & virneighbors() { return _virneighbors; }
+	inline std::vector<Datapoint*> const & virneighbors() const { return _virneighbors; }
 	inline culture_t culture() const { return _culture; }
 	inline culture_t & culture() { return _culture; }
 	inline void set_culture(culture_t input) { _culture = input; }

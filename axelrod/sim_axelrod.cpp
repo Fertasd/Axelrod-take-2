@@ -7,10 +7,53 @@ Sim_Axelrod::Sim_Axelrod(size_t width)
 	: Simulation(width)
 {	/* upon the creation of an object of this class, the following happens: */
 
-	palette().push_back(0xFF730000);		/* UC: defines the color table, colors can be given in many formats, see the documentation of QColor if the current one(hexadecimal) is not sufficient */
-	palette().push_back(0xFF333300);
-	palette().push_back(0xFF000066);
+	palette().push_back(0xFFff0000);
+	palette().push_back(0xFFe6d9cf);
+	palette().push_back(0xFF26805c);
+	palette().push_back(0xFFa3bfd9);
+	palette().push_back(0xFFd982c7);
+	palette().push_back(0xFFbf0000);
+	palette().push_back(0xFFffdd00);
+	palette().push_back(0xFF73ffc7);
+	palette().push_back(0xFF4d5a66);
+	palette().push_back(0xFFf2daed);
+	palette().push_back(0xFFbf5656);
+	palette().push_back(0xFF4c440b);
+	palette().push_back(0xFFbfffe5);
+	palette().push_back(0xFF3642b3);
+	palette().push_back(0xFF7f002f);
+	palette().push_back(0xFFf2b6b6);
+	palette().push_back(0xFF26230b);
+	palette().push_back(0xFF00c5cc);
+	palette().push_back(0xFF4400cc);
+	palette().push_back(0xFF330818);
+	palette().push_back(0xFF807373);
+	palette().push_back(0xFFb2a550);
+	palette().push_back(0xFF006f73);
+	palette().push_back(0xFF210b4d);
+	palette().push_back(0xFFcc3d72);
 	palette().push_back(0xFF000000);
+	palette().push_back(0xFFb2ff00);
+	palette().push_back(0xFF00191a);
+	palette().push_back(0xFF140b26);
+	palette().push_back(0xFF403036);
+	palette().push_back(0xFF261100);
+	palette().push_back(0xFFd5f291);
+	palette().push_back(0xFF0088ff);
+	palette().push_back(0xFF807399);
+	palette().push_back(0xFFf27e24);
+	palette().push_back(0xFF53664d);
+	palette().push_back(0xFF0b2e4d);
+	palette().push_back(0xFFa039bf);
+	palette().push_back(0xFF7f5839);
+	palette().push_back(0xFF00a61c);
+	palette().push_back(0xFF73beff);
+	palette().push_back(0xFFff00cc);
+	palette().push_back(0xFFf2bb91);
+	palette().push_back(0xFF0b4d16);
+	palette().push_back(0xFF457299);
+	palette().push_back(0xFF661f58);
+
 
 	reset();		/* assigns the initial state to the simulation */
 }
@@ -61,12 +104,11 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 		{
 			for (size_t j = 0; j < width(); j++)
 			{
-				if (realDist(rng) < 1)
+				if (realDist(rng) < 0.8)
 				{
 					if (realDist(rng) < virint)
 					{
-						std::uniform_int_distribution<uint64_t> sizeDist(0, _neighborList[player(i, j)].size());
-						auto neighbor = _neighborList[player(i, j)][sizeDist(rng)];
+						std::uniform_int_distribution<uint64_t> sizeDist(0, at(i,j).virneighbors().size());
 					}
 				}
 			}
@@ -87,10 +129,7 @@ void Sim_Axelrod::reset()		/* creates a specific strategy distribution across th
 
 			Datapoint::culture_t culture = 0;
 			for (uint8_t j = 0; j < F; j++)
-			{
-				Datapoint::culture_t hmm = dp.attributes()[j];
-				culture += hmm * static_cast<Datapoint::culture_t>(std::pow(q, F-j) * q);
-			}
+				culture += dp.attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
 			dp.set_culture(culture);
 		}
 }
