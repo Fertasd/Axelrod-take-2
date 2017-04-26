@@ -78,8 +78,6 @@ public:
 	inline size_t width() const { return _width; }							/* declares a function that returns the side length of a simulation */
 	inline const Datapoint& at(size_t i, size_t j) const { return _data[i * _width + j]; }
 	inline Datapoint& at(size_t i, size_t j) { return _data[i * _width + j]; }
-	inline Datapoint& atNum(size_t num) { return _data[num]; }
-	inline const Datapoint& atNum(size_t num) const { return _data[num]; }
 	SimParameter startselect{"StartSelect", 1, "Initial configuration. 1: random 2: interface 3: interfaces 4: island 5: island 6: empty 7: tilted interface 8: tilted interfaces"}; /*this is used to choose the initial state*/
 	//void reconnect(uint8_t ctype);
 	std::vector<std::vector<size_t>> _neighborList;

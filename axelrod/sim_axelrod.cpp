@@ -107,70 +107,70 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 			{
 				if (realDist(rng) > 0)
 				{
+					Datapoint* dp = & at(i,j);
+					std::vector<Datapoint*> neighbors;
+					if (i != 0 and j != 0 and i != width()-1 and j != width()-1){
+						neighbors.push_back(& at(i, j+1));
+						neighbors.push_back(& at(i, j-1));
+						neighbors.push_back(& at(i+1, j));
+						neighbors.push_back(& at(i-1, j));
+						neighbors.push_back(& at(i+1, j+1));
+						neighbors.push_back(& at(i-1, j+1));
+						neighbors.push_back(& at(i+1, j-1));
+						neighbors.push_back(& at(i-1, j-1));
+					}
+					if (i == 0 and j != 0 and j != width()-1){
+						neighbors.push_back(& at(i, j+1));
+						neighbors.push_back(& at(i, j-1));
+						neighbors.push_back(& at(i+1, j));
+						neighbors.push_back(& at(i+1, j+1));
+						neighbors.push_back(& at(i+1, j-1));
+					}
+					if (j == 0 and i != 0 and i != width()-1){
+						neighbors.push_back(& at(i, j+1));
+						neighbors.push_back(& at(i+1, j));
+						neighbors.push_back(& at(i-1, j));
+						neighbors.push_back(& at(i+1, j+1));
+						neighbors.push_back(& at(i-1, j+1));
+					}
+					if (j == width()-1 and i != 0 and i != width()-1){
+						neighbors.push_back(& at(i, j-1));
+						neighbors.push_back(& at(i+1, j));
+						neighbors.push_back(& at(i-1, j));
+						neighbors.push_back(& at(i+1, j-1));
+						neighbors.push_back(& at(i-1, j-1));
+					}
+					if (i == width()-1 and j != 0 and j != width()-1){
+						neighbors.push_back(& at(i, j+1));
+						neighbors.push_back(& at(i, j-1));
+						neighbors.push_back(& at(i-1, j));
+						neighbors.push_back(& at(i-1, j+1));
+						neighbors.push_back(& at(i-1, j-1));
+
+					}
+					if (i == 0 and j == 0){
+						neighbors.push_back(& at(i, j+1));
+						neighbors.push_back(& at(i+1, j));
+						neighbors.push_back(& at(i+1, j+1));
+					}
+					if (i == 0 and j == width()-1){
+						neighbors.push_back(& at(i, j-1));
+						neighbors.push_back(& at(i+1, j));
+						neighbors.push_back(& at(i+1, j-1));
+					}
+					if (i == width()-1 and j == 0){
+						neighbors.push_back(& at(i, j+1));
+						neighbors.push_back(& at(i-1, j));
+						neighbors.push_back(& at(i-1, j+1));
+					}
+					if (i == width()-1 and j == width()-1){
+						neighbors.push_back(& at(i, j-1));
+						neighbors.push_back(& at(i-1, j));
+						neighbors.push_back(& at(i-1, j+1));
+						neighbors.push_back(& at(i-1, j-1));
+					}
 					if (realDist(rng) > virint)
 					{
-						Datapoint* dp = & at(i,j);
-						std::vector<Datapoint*> neighbors;
-						if (i != 0 and j != 0 and i != width()-1 and j != width()-1){
-							neighbors.push_back(& at(i, j+1));
-							neighbors.push_back(& at(i, j-1));
-							neighbors.push_back(& at(i+1, j));
-							neighbors.push_back(& at(i-1, j));
-							neighbors.push_back(& at(i+1, j+1));
-							neighbors.push_back(& at(i-1, j+1));
-							neighbors.push_back(& at(i+1, j-1));
-							neighbors.push_back(& at(i-1, j-1));
-						}
-						if (i == 0 and j != 0 and j != width()-1){
-							neighbors.push_back(& at(i, j+1));
-							neighbors.push_back(& at(i, j-1));
-							neighbors.push_back(& at(i+1, j));
-							neighbors.push_back(& at(i+1, j+1));
-							neighbors.push_back(& at(i+1, j-1));
-						}
-						if (j == 0 and i != 0 and i != width()-1){
-							neighbors.push_back(& at(i, j+1));
-							neighbors.push_back(& at(i+1, j));
-							neighbors.push_back(& at(i-1, j));
-							neighbors.push_back(& at(i+1, j+1));
-							neighbors.push_back(& at(i-1, j+1));
-						}
-						if (j == width()-1 and i != 0 and i != width()-1){
-							neighbors.push_back(& at(i, j-1));
-							neighbors.push_back(& at(i+1, j));
-							neighbors.push_back(& at(i-1, j));
-							neighbors.push_back(& at(i+1, j-1));
-							neighbors.push_back(& at(i-1, j-1));
-						}
-						if (i == width()-1 and j != 0 and j != width()-1){
-							neighbors.push_back(& at(i, j+1));
-							neighbors.push_back(& at(i, j-1));
-							neighbors.push_back(& at(i-1, j));
-							neighbors.push_back(& at(i-1, j+1));
-							neighbors.push_back(& at(i-1, j-1));
-
-						}
-						if (i == 0 and j == 0){
-							neighbors.push_back(& at(i, j+1));
-							neighbors.push_back(& at(i+1, j));
-							neighbors.push_back(& at(i+1, j+1));
-						}
-						if (i == 0 and j == width()-1){
-							neighbors.push_back(& at(i, j-1));
-							neighbors.push_back(& at(i+1, j));
-							neighbors.push_back(& at(i+1, j-1));
-						}
-						if (i == width()-1 and j == 0){
-							neighbors.push_back(& at(i, j+1));
-							neighbors.push_back(& at(i-1, j));
-							neighbors.push_back(& at(i-1, j+1));
-						}
-						if (i == width()-1 and j == width()-1){
-							neighbors.push_back(& at(i, j-1));
-							neighbors.push_back(& at(i-1, j));
-							neighbors.push_back(& at(i-1, j+1));
-							neighbors.push_back(& at(i-1, j-1));
-						}
 						std::uniform_int_distribution<uint64_t> sizeDist(0, neighbors.size()-1);
 						Datapoint* neighbor = neighbors[sizeDist(rng)];
 						auto overlap_between = dp->overlap(dp, neighbor);
@@ -182,6 +182,63 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
 										inoverlap +=1;
+									}
+								}
+								for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
+									Datapoint* neighbor = dp->virneighbors()[count];
+									auto overlap_between = dp->overlap(dp, neighbor);
+									if (overlap_between.first > 0 and overlap_between.first < F){
+										inoverlap += 1;
+									}
+								}
+								std::uniform_int_distribution<uint64_t> ovlDist(0, overlap_between.second.size()-1);
+								auto switchat = overlap_between.second[ovlDist(rng)];
+								dp->attributes()[switchat] = neighbor->attributes()[switchat];
+								Datapoint::culture_t culture = 0;
+								for (uint8_t j = 0; j < F; j++)
+									culture += dp->attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
+								dp->set_culture(culture);
+								Datapoint::attribute_t outoverlap = 0;
+								for (Datapoint::attribute_t count = 0; count < neighbors.size()+dp->virneighbors().size(); count ++) {
+									Datapoint* neighbor = neighbors[count];
+									auto overlap_between = dp->overlap(dp, neighbor);
+									if (overlap_between.first > 0 and overlap_between.first < F){
+										outoverlap += 1;
+									}
+								}
+								for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
+									Datapoint* neighbor = dp->virneighbors()[count];
+									auto overlap_between = dp->overlap(dp, neighbor);
+									if (overlap_between.first > 0 and overlap_between.first < F){
+										outoverlap += 1;
+									}
+								}
+								setlive(live()-inoverlap+outoverlap);
+							}
+						}
+
+
+					}
+					else {
+						Datapoint* dp = & at(i,j);
+						std::uniform_int_distribution<uint64_t> sizeDist(0, dp->virneighbors().size()-1);
+						Datapoint* neighbor = dp->virneighbors()[sizeDist(rng)];
+						auto overlap_between = dp->overlap(dp, neighbor);
+						if (overlap_between.first > 0 and overlap_between.first < F){
+							if (realDist(rng) > 0) {
+								Datapoint::attribute_t inoverlap = 0;
+								for (Datapoint::attribute_t count = 0; count < neighbors.size(); count ++) {
+									Datapoint* neighbor = neighbors[count];
+									auto overlap_between = dp->overlap(dp, neighbor);
+									if (overlap_between.first > 0 and overlap_between.first < F){
+										inoverlap +=1;
+									}
+								}
+								for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
+									Datapoint* neighbor = dp->virneighbors()[count];
+									auto overlap_between = dp->overlap(dp, neighbor);
+									if (overlap_between.first > 0 and overlap_between.first < F){
+										inoverlap += 1;
 									}
 								}
 								std::uniform_int_distribution<uint64_t> ovlDist(0, overlap_between.second.size()-1);
@@ -199,10 +256,16 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 										outoverlap += 1;
 									}
 								}
+								for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
+									Datapoint* neighbor = dp->virneighbors()[count];
+									auto overlap_between = dp->overlap(dp, neighbor);
+									if (overlap_between.first > 0 and overlap_between.first < F){
+										outoverlap += 1;
+									}
+								}
 								setlive(live()-inoverlap+outoverlap);
 							}
 						}
-
 
 					}
 				}
@@ -213,12 +276,14 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 
 void Sim_Axelrod::reset()		/* creates a specific strategy distribution across the grid */
 {
+	setup_virtuals();
 	thread_local std::mt19937_64 rng(std::random_device{}());
 	std::uniform_int_distribution<uint64_t> dist(0, static_cast<uint64_t>(q.value()));
 	for (size_t ix = 0; ix < width(); ix++) {/* random strategy distribution */
 		for (size_t jx = 0; jx < width(); jx++)
 		{
 			Datapoint &dp = at(ix, jx);
+			dp.attributes().clear();
 			for (uint8_t index = 0; index < F; index++)
 				dp.push_attribute(dist(rng));
 
@@ -299,6 +364,13 @@ void Sim_Axelrod::reset()		/* creates a specific strategy distribution across th
 					setlive(live()+1);
 				}
 			}
+			for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
+				Datapoint* neighbor = dp->virneighbors()[count];
+				auto overlap_between = dp->overlap(dp, neighbor);
+				if (overlap_between.first > 0 and overlap_between.first < F){
+					setlive(live()+1);
+				}
+			}
 		}
 	}
 }
@@ -316,6 +388,12 @@ size_t Sim_Axelrod::stepTargetNumber() const
 
 size_t Sim_Axelrod::live()
 {
-	 { return _live; }
+	{ return _live; }
+}
+
+void Sim_Axelrod::setup_virtuals()
+{
+	Datapoint dp;
+	add_virtual(dp);
 }
 
