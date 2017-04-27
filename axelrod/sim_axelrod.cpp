@@ -105,7 +105,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 		{
 			for (size_t j = 0; j < width(); j++)
 			{
-				if (realDist(rng) > 0)
+				if (realDist(rng) > 0.8)
 				{
 					Datapoint* dp = & at(i,j);
 					std::vector<Datapoint*> neighbors;
@@ -175,7 +175,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 						Datapoint* neighbor = neighbors[sizeDist(rng)];
 						auto overlap_between = dp->overlap(dp, neighbor);
 						if (overlap_between.first > 0 and overlap_between.first < F){
-							if (realDist(rng) > 0) {
+							if (realDist(rng) > overlap_between.first/F) {
 								Datapoint::attribute_t inoverlap = 0;
 								for (Datapoint::attribute_t count = 0; count < neighbors.size(); count ++) {
 									Datapoint* neighbor = neighbors[count];
@@ -199,7 +199,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 									culture += dp->attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
 								dp->set_culture(culture);
 								Datapoint::attribute_t outoverlap = 0;
-								for (Datapoint::attribute_t count = 0; count < neighbors.size()+dp->virneighbors().size(); count ++) {
+								for (Datapoint::attribute_t count = 0; count < neighbors.size(); count ++) {
 									Datapoint* neighbor = neighbors[count];
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
@@ -225,20 +225,20 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 						Datapoint* neighbor = dp->virneighbors()[sizeDist(rng)];
 						auto overlap_between = dp->overlap(dp, neighbor);
 						if (overlap_between.first > 0 and overlap_between.first < F){
-							if (realDist(rng) > 0) {
+							if (realDist(rng) > overlap_between.first/F) {
 								Datapoint::attribute_t inoverlap = 0;
 								for (Datapoint::attribute_t count = 0; count < neighbors.size(); count ++) {
 									Datapoint* neighbor = neighbors[count];
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
-										inoverlap +=1;
+										inoverlap +=2;
 									}
 								}
 								for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
 									Datapoint* neighbor = dp->virneighbors()[count];
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
-										inoverlap += 1;
+										inoverlap += 2;
 									}
 								}
 								std::uniform_int_distribution<uint64_t> ovlDist(0, overlap_between.second.size()-1);
@@ -253,14 +253,14 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 									Datapoint* neighbor = neighbors[count];
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
-										outoverlap += 1;
+										outoverlap += 2;
 									}
 								}
 								for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
 									Datapoint* neighbor = dp->virneighbors()[count];
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
-										outoverlap += 1;
+										outoverlap += 2;
 									}
 								}
 								setlive(live()-inoverlap+outoverlap);
@@ -276,6 +276,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 
 void Sim_Axelrod::reset()		/* creates a specific strategy distribution across the grid */
 {
+	setlive(0);
 	setup_virtuals();
 	thread_local std::mt19937_64 rng(std::random_device{}());
 	std::uniform_int_distribution<uint64_t> dist(0, static_cast<uint64_t>(q.value()));
@@ -293,6 +294,7 @@ void Sim_Axelrod::reset()		/* creates a specific strategy distribution across th
 			dp.set_culture(culture);
 			}
 	}
+	update_virtuals();
 	for (size_t i = 0; i < width(); i++) {/* random strategy distribution */
 		for (size_t j = 0; j < width(); j++) {
 			Datapoint* dp = & at(i,j);
@@ -394,6 +396,46 @@ size_t Sim_Axelrod::live()
 void Sim_Axelrod::setup_virtuals()
 {
 	Datapoint dp;
+	for (Datapoint::attribute_t count = 0; count < F; count++){
+		dp.attributes().push_back(0);
+	}
+	Datapoint::culture_t culture = 0;
+	for (uint8_t j = 0; j < F; j++)
+		culture += dp.attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
+	dp.set_culture(culture);
 	add_virtual(dp);
+	for (size_t i = 0; i < width(); i++) {
+		for (size_t j = 0; j < width(); j++) {
+			at(i,j).virneighbors().clear();
+			at(i,j).virneighbors().push_back(& virtuals(0));
+		}
+	}
+}
+
+void Sim_Axelrod::update_virtuals()
+{
+	for (Datapoint::attribute_t attr = 0; attr < F; attr++) {
+		std::vector<Datapoint::culture_t> entries;
+		Datapoint::culture_t mostfrequent;
+		size_t freq;
+		for (size_t i = 0; i < width(); i++){
+			for (size_t j = 0; j < width(); j++){
+				entries.push_back(at(i,j).attributes()[attr]);
+			}
+		}
+		mostfrequent = entries[0];
+		freq = std::count(entries.begin(), entries.end(), entries[0]);
+		for (size_t iter = 0; iter < entries.size(); iter++) {
+			if (std::count(entries.begin(), entries.end(), entries[iter]) > freq) {
+				mostfrequent = entries[iter];
+				freq = std::count(entries.begin(), entries.end(), entries[iter]);
+			}
+		}
+		virtuals(0).attributes()[attr] = mostfrequent;
+	}
+	Datapoint::culture_t culture = 0;
+	for (uint8_t j = 0; j < F; j++)
+		culture += virtuals(0).attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
+	virtuals(0).set_culture(culture);
 }
 

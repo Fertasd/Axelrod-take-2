@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <QtWidgets>
+#include <unordered_set>
 #include "imagewidget.h"
 #include "simparameterwidget.h"
 #include "overloadselector.h"
@@ -56,13 +57,8 @@ MainWindow::MainWindow(QWidget *parent)
 	buttonLayout->addWidget(pauseButton);
 	auto* resetButton = new QPushButton("Reset");
 	buttonLayout->addWidget(resetButton);
-	auto* picButton = new QPushButton("Snapshot");
-	buttonLayout->addWidget(picButton);
-	auto* saveButton = new QPushButton("Save");
-	buttonLayout->addWidget(saveButton);
-	auto* loadButton = new QPushButton("Load");
-	buttonLayout->addWidget(loadButton);
-	auto* analButton = new QPushButton("Analysis");
+
+	auto* analButton = new QPushButton("Data collection");
 	analButton->setCheckable(true);
 	buttonLayout->addWidget(analButton);
 
@@ -151,58 +147,60 @@ MainWindow::MainWindow(QWidget *parent)
 	}); /* connects the clicked() event of the reset button with a series of events: the timer stops, the simulation is reset and displayed */
 
 
-	auto* saveList = new QListView;
+	/*auto* saveList = new QListView;
 	buttonLayout->addWidget(saveList);
 	saveList->setResizeMode(QListView::Adjust);
 	//saveManager.init();
-	saveList->setModel(&saveManager);
+	saveList->setModel(&saveManager);*/
 
-	connect(saveList->selectionModel(), &QItemSelectionModel::currentRowChanged, [=](const QModelIndex &current, const QModelIndex&) {
+	/*connect(saveList->selectionModel(), &QItemSelectionModel::currentRowChanged, [=](const QModelIndex &current, const QModelIndex&) {
 		if (session.simulation()) {
 			shouldSimulate = false;
 			timer->stop();
-		}
+		}*/
 		//QMessageBox(QMessageBox::Critical, "Dick message2", QString::number(current.row())).exec();
 		//auto hey = session._list[0];
 		//QMessageBox(QMessageBox::Critical, "Dick message2", QString::fromStdString(session._list[0])).exec();
 		//auto thingy = session._list[static_cast<size_t>(current.row())];
-		size_t index = session.getIndex(saveManager.getSimName(static_cast<size_t>(current.row())));
+		/*size_t index = session.getIndex(saveManager.getSimName(static_cast<size_t>(current.row())));
 
 		auto sim = simulationManager.getSimulation(index);
 
 		session.simulation(sim);
 		QApplication::processEvents();
-	});
+	});*/
 
-	connect(loadButton, &QPushButton::clicked, [=]{
-
-
+	/*connect(loadButton, &QPushButton::clicked, [=]{
 
 
-	});
 
-	auto* boxie = new DataCollectionToolbox;
-	boxie->setVisible(false);
+
+	});*/
+
+	/*auto* boxie = new DataCollectionToolbox;
+	boxie->setVisible(false);*/
 	connect(analButton, &QPushButton::clicked, [=]{
-		 });
-	connect(analButton, &QPushButton::toggled, [=]{
-		if (analButton->isChecked()){
-			shouldSimulate = false;
-			timer->stop();
-			auto* boxie = new DataCollectionToolbox;
-			boxie->setSimulation(session.simulation());
-			boxie->setup();
-			startButton->setEnabled(false);
-			pauseButton->setEnabled(false);
-			resetButton->setEnabled(false);
-			picButton->setEnabled(false);
-			}
-		else {
-			startButton->setEnabled(true);
-			pauseButton->setEnabled(true);
-			resetButton->setEnabled(true);
-			picButton->setEnabled(true);
-			boxie->getWindow()->resize(100, 100);
+		std::string retString = "collect_";
+		retString.append(session.simulation()->getName());
+		auto date = static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
+		auto date2 = std::to_string(date);
+		retString.append(date2);
+		retString.append(".dat");
+		std::ofstream f(retString);
+		f << "\n";
+		std::unordered_set<Datapoint::culture_t> results;
+		session.simulation()->reset();
+		while(session.simulation()->live() > 0){
+			QApplication::processEvents();
+			session.simulation()->step();
 		}
-	});
+		for (size_t i = 0; i < session.simulation()->width(); i++)
+			for (size_t j = 0; j < session.simulation()->width(); j++)
+				results.insert(session.simulation()->at(i,j).culture());
+		/*std::string stringy = static_cast<std::string>(results.size());
+		chary = char(stringy);*/
+		f << "\n";
+		QApplication::processEvents();
+		 });
+
 }
