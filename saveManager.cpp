@@ -30,11 +30,13 @@ private:
 SaveManager::SaveManager(QObject *parent)
 	: QAbstractItemModel(parent), _data({})
 {
-	ifstream infile;
+	constexpr auto &fileName = "C:/Users/Matyas/Documents/simulationNew/simulation/Saves/master.txt";
+	ifstream infile(fileName);
+	if(!infile.is_open())
+		throw std::runtime_error(string("Cannot open ") + fileName);
 
-	infile.open("C:/Users/Matyas/Documents/simulationNew/simulation/Saves/master.txt");
-
-	while (!infile.eof()) {
+	while (!infile.eof())
+	{
 		std::string sLine;
 		getline(infile, sLine);
 		_data.push_back(sLine);

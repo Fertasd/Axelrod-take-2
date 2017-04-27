@@ -34,11 +34,14 @@ void ImageWidget::paintEvent(QPaintEvent*)		/* defines what happens when the dis
 	switch(_connectionType) {		/* This is where the size of a little square is defined */
 		case 0:
 			step = minside/static_cast<int>(_dpwidth);
+			break;
 		case 1:
 			step = minside/static_cast<int>(_dpwidth);
 			step += step % 2;
+			break;
 		case 2:
 			step = minside/static_cast<int>(_dpwidth);
+			break;
 	}
 
 

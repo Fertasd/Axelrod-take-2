@@ -74,7 +74,7 @@ size_t Sim_LV4s1a::returnSpecies()
 
 size_t Sim_LV4s1a::live()
 {
-
+  return 0;
 }
 
 size_t Sim_LV4s1a::stepTargetNumber() const
