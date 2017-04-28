@@ -76,7 +76,7 @@ uint32_t Sim_Axelrod::renderFrameSkip() const
 
 size_t Sim_Axelrod::displayWidth() const
 {
-	return 100;			/* UC: returns the default display width of the simulation. */
+	return 200;			/* UC: returns the default display width of the simulation. */
 }
 
 uint8_t Sim_Axelrod::connectionType() const
@@ -184,8 +184,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 										inoverlap +=1;
 									}
 								}
-								for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
-									Datapoint* neighbor = dp->virneighbors()[count];
+								for (const auto& neighbor: dp->virneighbors()) {
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
 										inoverlap += 1;
@@ -206,8 +205,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 										outoverlap += 1;
 									}
 								}
-								for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
-									Datapoint* neighbor = dp->virneighbors()[count];
+								for (const auto& neighbor: dp->virneighbors()) {
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
 										outoverlap += 1;
@@ -221,8 +219,12 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 					}
 					else {
 						Datapoint* dp = & at(i,j);
+						std::vector<Datapoint*> virneighborlist;
+						for (const auto& element: dp->virneighbors()){
+							virneighborlist.push_back(element);
+						}
 						std::uniform_int_distribution<uint64_t> sizeDist(0, dp->virneighbors().size()-1);
-						Datapoint* neighbor = dp->virneighbors()[sizeDist(rng)];
+						Datapoint* neighbor = virneighborlist[sizeDist(rng)];
 						auto overlap_between = dp->overlap(dp, neighbor);
 						if (overlap_between.first > 0 and overlap_between.first < F){
 							if (realDist(rng) > overlap_between.first/F) {
@@ -234,8 +236,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 										inoverlap +=2;
 									}
 								}
-								for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
-									Datapoint* neighbor = dp->virneighbors()[count];
+								for (const auto& neighbor: dp->virneighbors()) {
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
 										inoverlap += 2;
@@ -256,8 +257,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 										outoverlap += 2;
 									}
 								}
-								for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
-									Datapoint* neighbor = dp->virneighbors()[count];
+								for (const auto& neighbor: dp->virneighbors()) {
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
 										outoverlap += 2;
@@ -366,8 +366,7 @@ void Sim_Axelrod::reset()		/* creates a specific strategy distribution across th
 					setlive(live()+1);
 				}
 			}
-			for (Datapoint::attribute_t count = 0; count < dp->virneighbors().size(); count ++) {
-				Datapoint* neighbor = dp->virneighbors()[count];
+			for (const auto& neighbor: dp->virneighbors()) {
 				auto overlap_between = dp->overlap(dp, neighbor);
 				if (overlap_between.first > 0 and overlap_between.first < F){
 					setlive(live()+1);
@@ -407,7 +406,7 @@ void Sim_Axelrod::setup_virtuals()
 	for (size_t i = 0; i < width(); i++) {
 		for (size_t j = 0; j < width(); j++) {
 			at(i,j).virneighbors().clear();
-			at(i,j).virneighbors().push_back(& virtuals(0));
+			at(i,j).virneighbors().insert(& virtuals(0));
 		}
 	}
 }
@@ -437,5 +436,18 @@ void Sim_Axelrod::update_virtuals()
 	for (uint8_t j = 0; j < F; j++)
 		culture += virtuals(0).attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
 	virtuals(0).set_culture(culture);
+}
+
+void Sim_Axelrod::virtual_connections()
+{
+	thread_local std::mt19937_64 rng(std::random_device{}());
+	std::uniform_int_distribution<uint64_t> sizeDist(0, width());
+	for (size_t i = 0; i < width(); i++){
+		for (size_t j = 0; j < width(); j++){
+			size_t h = sizeDist(rng);
+			size_t k = sizeDist(rng);
+			at(i,j).virneighbors().insert(& at(h,k));
+		}
+	}
 }
 

@@ -8,7 +8,7 @@
 class Sim_Axelrod : public Simulation
 {
 public:
-	Sim_Axelrod(size_t width = 20);								/*UC: declares a simulation with given width */
+	Sim_Axelrod(size_t width = 50);								/*UC: declares a simulation with given width */
 	inline constexpr static auto name() { return "Axelrod"; }	/*UC: returns the name of the simulation */
 	std::vector<SimParameter> parameters() override;
 	uint32_t animationDelay() const override;
@@ -28,12 +28,14 @@ public:
 	inline void add_virtual(Datapoint input) {_virtuals.push_back(input);}
 	void setup_virtuals();
 	void update_virtuals();
+	void virtual_connections();
+	void update_virconnects();
 
 private:
 	static constexpr uint8_t Ns = 4;												/* UC: number of species               */
 	const SimParameter Px{"Px", 0.1, "Exchange rate between neutral pairs"};		/* USEFUL! This is how a parameter is defined: SimParameter parameter{"Parameter name", parameter value, "Parameter description"} */
-	const SimParameter F{"F", 5, "Number of features"};
-	const SimParameter q{"q", 15, "Number of traits per feature"};
+	const SimParameter F{"F", 3, "Number of features"};
+	const SimParameter q{"q", 8, "Number of traits per feature"};
 	const SimParameter virint{"virint", 0.8, "Probability of virtual interaction"};
 	size_t _live = 0;
 	std::vector<Datapoint> _virtuals;

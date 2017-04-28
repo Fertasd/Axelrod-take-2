@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <memory>
+#include <unordered_set>
 #include <vector>
 #include <QColor>
 
@@ -10,11 +11,11 @@ public:
 	using attribute_t = uint64_t;
 	using culture_t = uint64_t;
 	Datapoint() = default;
-	Datapoint(std::vector<attribute_t> attributes, std::vector<Datapoint*> virneighbors, culture_t culture);
+	Datapoint(std::vector<attribute_t> attributes, std::unordered_set<Datapoint*> virneighbors, culture_t culture);
 	inline std::vector<attribute_t> & attributes() { return _attributes; }
 	inline std::vector<attribute_t> const & attributes() const { return _attributes; }
-	inline std::vector<Datapoint*> & virneighbors() { return _virneighbors; }
-	inline std::vector<Datapoint*> const & virneighbors() const { return _virneighbors; }
+	inline std::unordered_set<Datapoint*> & virneighbors() { return _virneighbors; }
+	inline std::unordered_set<Datapoint*> const & virneighbors() const { return _virneighbors; }
 	inline culture_t culture() const { return _culture; }
 	inline culture_t & culture() { return _culture; }
 	inline void set_culture(culture_t input) { _culture = input; }
@@ -22,7 +23,7 @@ public:
 	std::pair<attribute_t, std::vector<attribute_t>> overlap(Datapoint* target, Datapoint* neighbor);
 private:
 	std::vector<attribute_t> _attributes;
-	std::vector<Datapoint*> _virneighbors;
+	std::unordered_set<Datapoint*> _virneighbors;
 	culture_t _culture;
 };
 

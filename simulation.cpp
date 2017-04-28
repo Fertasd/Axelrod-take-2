@@ -4,7 +4,7 @@
 
 #include "simulation.h"
 
-Datapoint::Datapoint(std::vector<attribute_t> attributes, std::vector<Datapoint*> virneighbors, culture_t culture)
+Datapoint::Datapoint(std::vector<attribute_t> attributes, std::unordered_set<Datapoint*> virneighbors, culture_t culture)
 	: _attributes(std::move(attributes)), _virneighbors(std::move(virneighbors)), _culture(culture)
 { }
 
