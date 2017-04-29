@@ -1,6 +1,8 @@
 #include "mainwindow.h"
-#include <QtWidgets>
+#include <chrono>
 #include <unordered_set>
+#include <QtWidgets>
+#include <utils.h>
 #include "imagewidget.h"
 #include "simparameterwidget.h"
 #include "overloadselector.h"
@@ -187,6 +189,7 @@ MainWindow::MainWindow(QWidget *parent)
 		retString.append(date2);
 		retString.append(".dat");
 		std::ofstream f(retString);
+		SIM_USERASSERT_M(f.is_open(), "Cannot open " + retString);
 		f << "\n";
 		std::unordered_set<Datapoint::culture_t> results;
 		session.simulation()->reset();

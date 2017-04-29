@@ -5,19 +5,11 @@
 #include "simparameterwidget.h"
 #include "overloadselector.h"
 
-DataCollectionToolbox::DataCollectionToolbox(QWidget *parent) : QWidget(parent)
+DataCollectionToolbox::DataCollectionToolbox(std::shared_ptr<Simulation> sim, QWidget *parent)
+	: QWidget(parent), _simulation(std::move(sim))
 {
-	setup();
-}
-
-void DataCollectionToolbox::setSimulation(const std::shared_ptr<Simulation>& sim)
-{
-	_simulation = sim;
-}
-
-void DataCollectionToolbox::setup()
-{
-	if (_simulation){
+	if (_simulation)
+	{
 		_window->setWindowTitle("Analysis parameters");
 		_window->resize(400, 500);
 		auto* wMainPanel = new QWidget;
@@ -36,10 +28,10 @@ void DataCollectionToolbox::setup()
 		}
 
 
-		auto* collector = new DataCollector;
-		collector->setSimulation(_simulation);
+		_collector = new DataCollector;
+		_collector->setSimulation(_simulation);
 		connect(parameterlist, &QListWidget::currentRowChanged, [=](double newValue){
-			collector->setParameter(paramlist[newValue]);
+			_collector->setParameter(paramlist[newValue]);
 
 		});
 
@@ -51,7 +43,7 @@ void DataCollectionToolbox::setup()
 			starterButton->setEnabled(false);
 
 			QApplication::processEvents();
-			collector->collectData();
+			_collector->collectData();
 			QApplication::processEvents();
 			starterButton->setEnabled(true);
 
@@ -59,7 +51,6 @@ void DataCollectionToolbox::setup()
 
 		_window->show();
 	}
-
 }
 
 std::shared_ptr<QMainWindow> DataCollectionToolbox::getWindow()

@@ -1,10 +1,10 @@
 #include "saveManager.h"
 
-#include "coordtest/sim_coordtest.h"
-
 #include <iostream>
 #include <fstream>
-#include <cstring>
+
+#include "utils.h"
+#include "coordtest/sim_coordtest.h"
 
 using namespace std;
 
@@ -32,8 +32,7 @@ SaveManager::SaveManager(QObject *parent)
 {
 	constexpr auto &fileName = "C:/Users/Matyas/Documents/simulationNew/simulation/Saves/master.txt";
 	ifstream infile(fileName);
-	if(!infile.is_open())
-		throw std::runtime_error(string("Cannot open ") + fileName);
+	SIM_USERASSERT_M(infile.is_open(), string("Cannot open ") + fileName);
 
 	while (!infile.eof())
 	{

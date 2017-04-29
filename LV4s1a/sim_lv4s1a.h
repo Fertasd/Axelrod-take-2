@@ -9,7 +9,7 @@
 /* MC simulations                                                 */
 /* pair correlations and fluctuations                             */
 
-class Sim_LV4s1a : public Simulation
+class Sim_LV4s1a final : public Simulation
 {
 public:
 	Sim_LV4s1a(size_t width = 500);								/*UC: declares a simulation with given width */

@@ -8,6 +8,7 @@
 #include <QtWidgets>
 #include <QApplication>
 
+#include "utils.h"
 #include "DataCollector.h"
 
 DataCollector::DataCollector(QWidget* parent) : QWidget(parent)
@@ -32,7 +33,7 @@ void DataCollector::setEndpoint(double ep)
 
 void DataCollector::setParameter(SimParameter par)
 {
-	_param = par;
+	_param = std::move(par);
 }
 
 void DataCollector::setStep(double stp)
@@ -59,6 +60,7 @@ void DataCollector::collectData()
 	retString.append(date2);
 	retString.append(".dat");
 	std::ofstream f(retString);
+	SIM_USERASSERT_M(f.is_open(), "Cannot open " + retString);
 	f << "\n";
 
 	std::unordered_set<Datapoint::culture_t> results;

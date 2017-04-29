@@ -14,10 +14,10 @@ Sim_LV4s1a::Sim_LV4s1a(size_t width) : Simulation(width), data2(width * width)
 	};
 	changedEvent(0);
 
-	palette().push_back(0x00FFFFFF);		/* UC: defines the color table, colors can be given in many formats, see the documentation of QColor if the current one(hexadecimal) is not sufficient */
-	palette().push_back(0x00FF0000);
-	palette().push_back(0x0033CC00);
-	palette().push_back(0xFF000000);
+	palette().emplace_back(0x00FFFFFF);		/* UC: defines the color table, colors can be given in many formats, see the documentation of QColor if the current one(hexadecimal) is not sufficient */
+	palette().emplace_back(0x00FF0000);
+	palette().emplace_back(0x0033CC00);
+	palette().emplace_back(0xFF000000);
 
 	reset();		/* assigns the initial state to the simulation */
 }
