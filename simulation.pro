@@ -22,6 +22,7 @@ SOURCES += main.cpp\
     axelrod/sim_axelrod.cpp
 
 HEADERS  += \
+    utils.h \
     simulation.h \
     mainwindow.h \
     imagewidget.h \
@@ -34,6 +35,3 @@ HEADERS  += \
     datacollectiontoolbox.h \
     DataCollector.h \
     axelrod/sim_axelrod.h
-
-DISTFILES += \
-    ../The Promise.docx

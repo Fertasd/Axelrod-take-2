@@ -1,14 +1,15 @@
 #include <cmath>
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdio>
 #include <cstring>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <chrono>
-
+#include "utils.h"
 #include "simulationsession.h"
+
 using namespace std;
+
 SimulationSession::SimulationSession(QObject *parent) : QObject(parent), _animationDelay(200), _renderFrameSkip(0)
 {
 	nameList.insert(pair<QString, int>(QString("coordtest"), 10));
@@ -52,13 +53,12 @@ void SimulationSession::connectionType(uint8_t ctype)
 	emit connectionTypeChanged(_connectionType);
 }
 
-size_t SimulationSession::getIndex(std::string fileName)
+size_t SimulationSession::getIndex(std::string const &fileName)
 {
-	ifstream infile;
 	std::string baseString = "C:/Users/Matyas/Documents/simulationNew/simulation/Saves/";
 	baseString.append(fileName);
-	//baseString.append("\"");
-	infile.open(baseString);
+	ifstream infile(baseString);
+	SIM_USERASSERT_M(infile.is_open(), "Cannot open " + baseString);
 	std::vector<double> numbers;
 	//while (!infile.eof()) {
 		std::string sLine;

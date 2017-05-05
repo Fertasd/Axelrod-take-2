@@ -26,8 +26,8 @@ std::pair<Datapoint::attribute_t, std::vector<Datapoint::attribute_t> > Datapoin
 	return retpair;
 }
 
-SimParameter::Data::Data(const QString &name, double value, const QString &description)
-	: _name(name), _value(value), _description(description)
+SimParameter::Data::Data(QString name, double value, QString description)
+	: _name(std::move(name)), _value(value), _description(std::move(description))
 { }
 
 SimParameter::SimParameter(const QString& name, double value, const QString &description)
@@ -44,7 +44,7 @@ SimParameter &SimParameter::operator=(double value)
 
 void SimParameter::onChanged(std::function<void (double)> func)
 {
-	_data->onChanged = func;
+	_data->onChanged = std::move(func);
 }
 
 Simulation::Simulation(size_t width) : _data(width * width), _width(width)

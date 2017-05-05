@@ -1,5 +1,4 @@
 #include "coordtest/sim_coordtest.h"
-#include <stdlib.h>
 #include <exception>
 #include "QTextStream"
 #include <QMessageBox>
@@ -20,8 +19,8 @@ Sim_coordtest::Sim_coordtest(size_t width) : Simulation(width), data2(width * wi
 	sep.onChanged(changedEvent);
 	changedEvent(0);
 
-	palette().push_back(QColor(0, 0, 0, 255));		/* UC: defines the color table, colors can be given in many formats, see the documentation of QColor if the current one(hexadecimal) is not sufficient */
-	palette().push_back(QColor(255, 255, 255, 255));
+	palette().emplace_back(0, 0, 0, 255);		/* UC: defines the color table, colors can be given in many formats, see the documentation of QColor if the current one(hexadecimal) is not sufficient */
+	palette().emplace_back(255, 255, 255, 255);
 
 	reset();		/* assigns the initial state to the simulation */
 }

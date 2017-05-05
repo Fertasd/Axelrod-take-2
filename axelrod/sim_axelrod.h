@@ -5,7 +5,7 @@
 
 /*Axelrod model, new, shiny and fuck me*/
 
-class Sim_Axelrod : public Simulation
+class Sim_Axelrod final : public Simulation
 {
 public:
 	Sim_Axelrod(size_t width = 5);								/*UC: declares a simulation with given width */

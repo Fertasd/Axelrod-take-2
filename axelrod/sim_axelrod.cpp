@@ -8,52 +8,52 @@ Sim_Axelrod::Sim_Axelrod(size_t width)
 	: Simulation(width)
 {	/* upon the creation of an object of this class, the following happens: */
 
-	palette().push_back(0xFFff0000);
-	palette().push_back(0xFFe6d9cf);
-	palette().push_back(0xFF26805c);
-	palette().push_back(0xFFa3bfd9);
-	palette().push_back(0xFFd982c7);
-	palette().push_back(0xFFbf0000);
-	palette().push_back(0xFFffdd00);
-	palette().push_back(0xFF73ffc7);
-	palette().push_back(0xFF4d5a66);
-	palette().push_back(0xFFf2daed);
-	palette().push_back(0xFFbf5656);
-	palette().push_back(0xFF4c440b);
-	palette().push_back(0xFFbfffe5);
-	palette().push_back(0xFF3642b3);
-	palette().push_back(0xFF7f002f);
-	palette().push_back(0xFFf2b6b6);
-	palette().push_back(0xFF26230b);
-	palette().push_back(0xFF00c5cc);
-	palette().push_back(0xFF4400cc);
-	palette().push_back(0xFF330818);
-	palette().push_back(0xFF807373);
-	palette().push_back(0xFFb2a550);
-	palette().push_back(0xFF006f73);
-	palette().push_back(0xFF210b4d);
-	palette().push_back(0xFFcc3d72);
-	palette().push_back(0xFF000000);
-	palette().push_back(0xFFb2ff00);
-	palette().push_back(0xFF00191a);
-	palette().push_back(0xFF140b26);
-	palette().push_back(0xFF403036);
-	palette().push_back(0xFF261100);
-	palette().push_back(0xFFd5f291);
-	palette().push_back(0xFF0088ff);
-	palette().push_back(0xFF807399);
-	palette().push_back(0xFFf27e24);
-	palette().push_back(0xFF53664d);
-	palette().push_back(0xFF0b2e4d);
-	palette().push_back(0xFFa039bf);
-	palette().push_back(0xFF7f5839);
-	palette().push_back(0xFF00a61c);
-	palette().push_back(0xFF73beff);
-	palette().push_back(0xFFff00cc);
-	palette().push_back(0xFFf2bb91);
-	palette().push_back(0xFF0b4d16);
-	palette().push_back(0xFF457299);
-	palette().push_back(0xFF661f58);
+	palette().emplace_back(0xFFff0000);
+	palette().emplace_back(0xFFe6d9cf);
+	palette().emplace_back(0xFF26805c);
+	palette().emplace_back(0xFFa3bfd9);
+	palette().emplace_back(0xFFd982c7);
+	palette().emplace_back(0xFFbf0000);
+	palette().emplace_back(0xFFffdd00);
+	palette().emplace_back(0xFF73ffc7);
+	palette().emplace_back(0xFF4d5a66);
+	palette().emplace_back(0xFFf2daed);
+	palette().emplace_back(0xFFbf5656);
+	palette().emplace_back(0xFF4c440b);
+	palette().emplace_back(0xFFbfffe5);
+	palette().emplace_back(0xFF3642b3);
+	palette().emplace_back(0xFF7f002f);
+	palette().emplace_back(0xFFf2b6b6);
+	palette().emplace_back(0xFF26230b);
+	palette().emplace_back(0xFF00c5cc);
+	palette().emplace_back(0xFF4400cc);
+	palette().emplace_back(0xFF330818);
+	palette().emplace_back(0xFF807373);
+	palette().emplace_back(0xFFb2a550);
+	palette().emplace_back(0xFF006f73);
+	palette().emplace_back(0xFF210b4d);
+	palette().emplace_back(0xFFcc3d72);
+	palette().emplace_back(0xFF000000);
+	palette().emplace_back(0xFFb2ff00);
+	palette().emplace_back(0xFF00191a);
+	palette().emplace_back(0xFF140b26);
+	palette().emplace_back(0xFF403036);
+	palette().emplace_back(0xFF261100);
+	palette().emplace_back(0xFFd5f291);
+	palette().emplace_back(0xFF0088ff);
+	palette().emplace_back(0xFF807399);
+	palette().emplace_back(0xFFf27e24);
+	palette().emplace_back(0xFF53664d);
+	palette().emplace_back(0xFF0b2e4d);
+	palette().emplace_back(0xFFa039bf);
+	palette().emplace_back(0xFF7f5839);
+	palette().emplace_back(0xFF00a61c);
+	palette().emplace_back(0xFF73beff);
+	palette().emplace_back(0xFFff00cc);
+	palette().emplace_back(0xFFf2bb91);
+	palette().emplace_back(0xFF0b4d16);
+	palette().emplace_back(0xFF457299);
+	palette().emplace_back(0xFF661f58);
 
 
 	reset();		/* assigns the initial state to the simulation */
@@ -177,8 +177,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 						if (overlap_between.first > 0 and overlap_between.first < F){
 							if (realDist(rng) > overlap_between.first/F) {
 								Datapoint::attribute_t inoverlap = 0;
-								for (Datapoint::attribute_t count = 0; count < neighbors.size(); count ++) {
-									Datapoint* neighbor = neighbors[count];
+								for (Datapoint * const neighbor : neighbors) {
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
 										inoverlap +=1;
@@ -198,8 +197,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 									culture += dp->attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
 								dp->set_culture(culture);
 								Datapoint::attribute_t outoverlap = 0;
-								for (Datapoint::attribute_t count = 0; count < neighbors.size(); count ++) {
-									Datapoint* neighbor = neighbors[count];
+								for (Datapoint * const neighbor : neighbors) {
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
 										outoverlap += 1;
@@ -229,8 +227,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 						if (overlap_between.first > 0 and overlap_between.first < F){
 							if (realDist(rng) > overlap_between.first/F) {
 								Datapoint::attribute_t inoverlap = 0;
-								for (Datapoint::attribute_t count = 0; count < neighbors.size(); count ++) {
-									Datapoint* neighbor = neighbors[count];
+								for (Datapoint * const neighbor : neighbors) {
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
 										inoverlap +=2;
@@ -250,8 +247,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 									culture += dp->attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
 								dp->set_culture(culture);
 								Datapoint::attribute_t outoverlap = 0;
-								for (Datapoint::attribute_t count = 0; count < neighbors.size(); count ++) {
-									Datapoint* neighbor = neighbors[count];
+								for (Datapoint * const neighbor : neighbors) {
 									auto overlap_between = dp->overlap(dp, neighbor);
 									if (overlap_between.first > 0 and overlap_between.first < F){
 										outoverlap += 2;
@@ -359,8 +355,7 @@ void Sim_Axelrod::reset()		/* creates a specific strategy distribution across th
 				neighbors.push_back(& at(i-1, j+1));
 				neighbors.push_back(& at(i-1, j-1));
 			}
-			for (Datapoint::attribute_t count = 0; count < neighbors.size(); count ++) {
-				Datapoint* neighbor = neighbors[count];
+			for (Datapoint * const neighbor : neighbors) {
 				auto overlap_between = dp->overlap(dp, neighbor);
 				if (overlap_between.first > 0 and overlap_between.first < F){
 					setlive(live()+1);
@@ -425,7 +420,7 @@ void Sim_Axelrod::update_virtuals()
 		mostfrequent = entries[0];
 		freq = std::count(entries.begin(), entries.end(), entries[0]);
 		for (size_t iter = 0; iter < entries.size(); iter++) {
-			if (std::count(entries.begin(), entries.end(), entries[iter]) > freq) {
+			if (static_cast<size_t>(std::count(entries.begin(), entries.end(), entries[iter])) > freq) {
 				mostfrequent = entries[iter];
 				freq = std::count(entries.begin(), entries.end(), entries[iter]);
 			}

@@ -24,7 +24,7 @@ public:
 	QString snapshot();
 	QString save();
 	void load(std::string fileName);
-	size_t getIndex(std::string fileName);
+	size_t getIndex(std::string const &fileName);
 	std::vector<std::string> _list;
 	std::map<QString, int> nameList;
 

@@ -31,7 +31,7 @@ class SimParameter
 {
 	struct Data
 	{
-		Data(const QString &name, double value, const QString& description);
+		Data(QString name, double value, QString description);
 		const QString _name;
 		double _value;
 		const QString _description;

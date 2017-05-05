@@ -8,7 +8,7 @@
 /* z=4, stochastic imitation or best response               */
 /* MC simulations                                           */
 
-class Sim_coordtest: public Simulation
+class Sim_coordtest final : public Simulation
 {
 public:
 	Sim_coordtest(size_t width = 400);							/*UC: declares a simulation with given width */
