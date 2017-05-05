@@ -5,7 +5,6 @@
 #include <fstream>
 #include <cstring>
 #include <QAbstractItemModel>
-#include "simulation.h"
 
 /*class SimulationWrapper
 {

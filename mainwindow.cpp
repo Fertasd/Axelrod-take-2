@@ -7,6 +7,7 @@
 #include "simparameterwidget.h"
 #include "overloadselector.h"
 #include "datacollectiontoolbox.h"
+#include "simulationmanager.h"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), shouldSimulate(false)

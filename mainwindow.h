@@ -12,7 +12,6 @@ public:
 	explicit MainWindow(QWidget *parent = 0);  /* creates the display window */
 private:
 	SimulationManager simulationManager;		/* adds a simulation manager object to the window */
-	SaveManager saveManager;
 	SimulationSession session;
 	bool shouldSimulate;
 };
