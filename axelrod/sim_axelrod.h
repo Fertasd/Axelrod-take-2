@@ -34,9 +34,9 @@ public:
 private:
 	static constexpr uint8_t Ns = 4;												/* UC: number of species               */
 	const SimParameter Px{"Px", 0.1, "Exchange rate between neutral pairs"};		/* USEFUL! This is how a parameter is defined: SimParameter parameter{"Parameter name", parameter value, "Parameter description"} */
-	const SimParameter F{"F", 2, "Number of features"};
-	const SimParameter q{"q", 3, "Number of traits per feature"};
-	const SimParameter virint{"virint", 0.0, "Probability of virtual interaction"};
+	SimParameter F{"F", 2, "Number of features"};
+	SimParameter q{"q", 3, "Number of traits per feature"};
+	SimParameter virint{"virint", 0.0, "Probability of virtual interaction"};
 	size_t _live = 0;
 	std::vector<Datapoint> _virtuals;
 };

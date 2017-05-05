@@ -7,6 +7,12 @@
 Sim_Axelrod::Sim_Axelrod(size_t width)
 	: Simulation(width)
 {	/* upon the creation of an object of this class, the following happens: */
+	auto changedEvent = [=] (double) {
+		reset();
+	};
+
+	F.onChanged(changedEvent);
+	q.onChanged(changedEvent);
 
 	palette().emplace_back(0xFFff0000);
 	palette().emplace_back(0xFFe6d9cf);
