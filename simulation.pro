@@ -19,7 +19,6 @@ SOURCES += main.cpp\
     coordtest/sim_coordtest.cpp \
     datacollectiontoolbox.cpp \
     DataCollector.cpp \
-    saveManager.cpp \
     axelrod/sim_axelrod.cpp
 
 HEADERS  += \
@@ -34,7 +33,6 @@ HEADERS  += \
     coordtest/sim_coordtest.h \
     datacollectiontoolbox.h \
     DataCollector.h \
-    saveManager.h \
     axelrod/sim_axelrod.h
 
 DISTFILES += \
