@@ -24,8 +24,6 @@ private:
 
 SimulationManager::SimulationManager(QObject *parent)
 	: QAbstractItemModel(parent), _data({
-										std::make_shared<SW<Sim_LV4s1a>>(),
-										std::make_shared<SW<Sim_coordtest>>(),
 										std::make_shared<SW<Sim_Axelrod>>()
 										/* UC: add a similar line with the class name of the simulation
 										   you're adding to the display and have commas after all

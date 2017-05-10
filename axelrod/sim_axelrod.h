@@ -8,7 +8,7 @@
 class Sim_Axelrod final : public Simulation
 {
 public:
-	Sim_Axelrod(size_t width = 5);								/*UC: declares a simulation with given width */
+	Sim_Axelrod(size_t width =2);								/*UC: declares a simulation with given width */
 	inline constexpr static auto name() { return "Axelrod"; }	/*UC: returns the name of the simulation */
 	std::vector<SimParameter> parameters() override;
 	uint32_t animationDelay() const override;
@@ -26,7 +26,9 @@ public:
 	inline const Datapoint& virtuals(size_t i) const { return _virtuals[i]; }
 	inline Datapoint& virtuals(size_t i) { return _virtuals[i]; }
 	inline void add_virtual(Datapoint input) {_virtuals.push_back(input);}
+	inline void clear_virtuals() {_virtuals.clear();}
 	void setup_virtuals();
+	void initialize_media();
 	void update_virtuals();
 	void virtual_connections();
 	void update_virconnects();

@@ -13,7 +13,7 @@ std::pair<Datapoint::attribute_t, std::vector<Datapoint::attribute_t> > Datapoin
 	attribute_t overlapy = 0;
 	std::vector<Datapoint::attribute_t> locations;
 	for (attribute_t index = 0; index < target->attributes().size(); index++){
-		if (target->attributes()[index] = neighbor->attributes()[index]){
+		if (target->attributes()[index] == neighbor->attributes()[index]){
 			overlapy += 1;
 		}
 		else {

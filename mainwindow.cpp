@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include <chrono>
+#include <fstream>
+#include <iostream>
 #include <unordered_set>
 #include <QtWidgets>
 #include <utils.h>
@@ -65,10 +67,11 @@ MainWindow::MainWindow(QWidget *parent)
 	analButton->setCheckable(true);
 	buttonLayout->addWidget(analButton);
 
-	auto* simList = new QListView;							/* creates an object(QListView) for displaying the list */
-	buttonLayout->addWidget(simList);						/* adds it to the vertical layout */
-	simList->setResizeMode(QListView::Adjust);				/* allows the list to be resized if necessary*/
-	simList->setModel(&simulationManager);					/* specifies the Simulation Manager as the source of the list */
+	//auto* simList = new QListView;							/* creates an object(QListView) for displaying the list */
+	//buttonLayout->addWidget(simList);						/* adds it to the vertical layout */
+	//simList->setResizeMode(QListView::Adjust);				/* allows the list to be resized if necessary*/
+	//simList->setModel(&simulationManager);					/* specifies the Simulation Manager as the source of the list */
+	session.simulation(simulationManager.getSimulation(0));
 
 	auto* formLayout = new QFormLayout;
 	buttonLayout->addLayout(formLayout);
@@ -119,11 +122,6 @@ MainWindow::MainWindow(QWidget *parent)
 		params->setSimulationParameters(session.simulation()->parameters());
 		session.simulation()->startselect = session.simulation()->resetType();
 	});
-	connect(simList->selectionModel(), &QItemSelectionModel::currentRowChanged, [=](const QModelIndex &current, const QModelIndex&){
-		session.simulation(simulationManager.getSimulation(static_cast<size_t>(current.row())));
-	});										/* a setup that links the selection of an item on the list to a series of events:
-											  stops the timer, creates a simulation of the corresponding type, adjusts the timer
-												timer appropriately and adds it to the display, then displays it */
 
 	connect(timer, &QTimer::timeout, [=]{
 		timer->stop();
@@ -201,9 +199,12 @@ MainWindow::MainWindow(QWidget *parent)
 		for (size_t i = 0; i < session.simulation()->width(); i++)
 			for (size_t j = 0; j < session.simulation()->width(); j++)
 				results.insert(session.simulation()->at(i,j).culture());
-		/*std::string stringy = static_cast<std::string>(results.size());
-		chary = char(stringy);*/
+		size_t ret = results.size();
+		f << ret;
 		f << "\n";
+		f.close();
+		QApplication::processEvents();
+		QMessageBox::information(this, "Notice", "Data collection finished");
 		QApplication::processEvents();
 		 });
 
