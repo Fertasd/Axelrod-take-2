@@ -117,7 +117,8 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(&session, &SimulationSession::connectionTypeChanged, [=](uint8_t newValue){ connecter->setValue(static_cast<int>(newValue)); });
 
 	auto* params = new SimParameterWidget;
-	buttonLayout->addWidget(params);
+	buttonLayout->addWidget(params);	
+	params->setSimulationParameters(session.simulation()->parameters());
 	connect(&session, &SimulationSession::simulationChanged, [=]{
 		params->setSimulationParameters(session.simulation()->parameters());
 		session.simulation()->startselect = session.simulation()->resetType();
@@ -147,39 +148,6 @@ MainWindow::MainWindow(QWidget *parent)
 		}
 	}); /* connects the clicked() event of the reset button with a series of events: the timer stops, the simulation is reset and displayed */
 
-
-	/*auto* saveList = new QListView;
-	buttonLayout->addWidget(saveList);
-	saveList->setResizeMode(QListView::Adjust);
-	//saveManager.init();
-	saveList->setModel(&saveManager);*/
-
-	/*connect(saveList->selectionModel(), &QItemSelectionModel::currentRowChanged, [=](const QModelIndex &current, const QModelIndex&) {
-		if (session.simulation()) {
-			shouldSimulate = false;
-			timer->stop();
-		}*/
-		//QMessageBox(QMessageBox::Critical, "Dick message2", QString::number(current.row())).exec();
-		//auto hey = session._list[0];
-		//QMessageBox(QMessageBox::Critical, "Dick message2", QString::fromStdString(session._list[0])).exec();
-		//auto thingy = session._list[static_cast<size_t>(current.row())];
-		/*size_t index = session.getIndex(saveManager.getSimName(static_cast<size_t>(current.row())));
-
-		auto sim = simulationManager.getSimulation(index);
-
-		session.simulation(sim);
-		QApplication::processEvents();
-	});*/
-
-	/*connect(loadButton, &QPushButton::clicked, [=]{
-
-
-
-
-	});*/
-
-	/*auto* boxie = new DataCollectionToolbox;
-	boxie->setVisible(false);*/
 	connect(analButton, &QPushButton::clicked, [=]{
 		std::string retString = "collect_";
 		retString.append(session.simulation()->getName());
@@ -190,6 +158,7 @@ MainWindow::MainWindow(QWidget *parent)
 		std::ofstream f(retString);
 		SIM_USERASSERT_M(f.is_open(), "Cannot open " + retString);
 		f << "\n";
+		for (uint8_t iter = 0; iter < session.simulation()->_runs; iter++){
 		std::unordered_set<Datapoint::culture_t> results;
 		session.simulation()->reset();
 		while(session.simulation()->live() > 0){
@@ -202,6 +171,7 @@ MainWindow::MainWindow(QWidget *parent)
 		size_t ret = results.size();
 		f << ret;
 		f << "\n";
+		}
 		f.close();
 		QApplication::processEvents();
 		QMessageBox::information(this, "Notice", "Data collection finished");

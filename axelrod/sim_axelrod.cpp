@@ -67,7 +67,7 @@ Sim_Axelrod::Sim_Axelrod(size_t width)
 
 std::vector<SimParameter> Sim_Axelrod::parameters()
 {
-	return {startselect, Px, F, q, virint};		/* UC: adjust this list to only show the parameters you actually have in your simulation. */
+	return {F, q, virint, _runs};		/* UC: adjust this list to only show the parameters you actually have in your simulation. */
 }
 
 uint32_t Sim_Axelrod::animationDelay() const
@@ -172,7 +172,6 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 					if (i == width()-1 and j == width()-1){
 						neighbors.push_back(& at(i, j-1));
 						neighbors.push_back(& at(i-1, j));
-						neighbors.push_back(& at(i-1, j+1));
 						neighbors.push_back(& at(i-1, j-1));
 					}
 					if (realDist(rng) > virint)
@@ -189,10 +188,12 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 										inoverlap +=2;
 									}
 								}
-								for (const auto& neighbor: dp->virneighbors()) {
-									auto overlap_between = dp->overlap(dp, neighbor);
-									if (overlap_between.first > 0 and overlap_between.first < F){
-										inoverlap += 2;
+								if (virint > 0){
+									for (const auto& neighbor: dp->virneighbors()) {
+										auto overlap_between = dp->overlap(dp, neighbor);
+										if (overlap_between.first > 0 and overlap_between.first < F){
+											inoverlap += 2;
+										}
 									}
 								}
 								std::uniform_int_distribution<uint64_t> ovlDist(0, overlap_between.second.size()-1);
@@ -209,10 +210,12 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 										outoverlap += 2;
 									}
 								}
-								for (const auto& neighbor: dp->virneighbors()) {
-									auto overlap_between = dp->overlap(dp, neighbor);
-									if (overlap_between.first > 0 and overlap_between.first < F){
-										outoverlap += 2;
+								if (virint > 0){
+									for (const auto& neighbor: dp->virneighbors()) {
+										auto overlap_between = dp->overlap(dp, neighbor);
+										if (overlap_between.first > 0 and overlap_between.first < F){
+											outoverlap += 2;
+										}
 									}
 								}
 								setlive(live()-inoverlap+outoverlap);
@@ -239,10 +242,12 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 										inoverlap +=2;
 									}
 								}
-								for (const auto& neighbor: dp->virneighbors()) {
-									auto overlap_between = dp->overlap(dp, neighbor);
-									if (overlap_between.first > 0 and overlap_between.first < F){
-										inoverlap += 2;
+								if (virint > 0){
+									for (const auto& neighbor: dp->virneighbors()) {
+										auto overlap_between = dp->overlap(dp, neighbor);
+										if (overlap_between.first > 0 and overlap_between.first < F){
+											inoverlap += 2;
+										}
 									}
 								}
 								std::uniform_int_distribution<uint64_t> ovlDist(0, overlap_between.second.size()-1);
@@ -259,10 +264,12 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 										outoverlap += 2;
 									}
 								}
-								for (const auto& neighbor: dp->virneighbors()) {
-									auto overlap_between = dp->overlap(dp, neighbor);
-									if (overlap_between.first > 0 and overlap_between.first < F){
-										outoverlap += 2;
+								if (virint > 0){
+									for (const auto& neighbor: dp->virneighbors()) {
+										auto overlap_between = dp->overlap(dp, neighbor);
+										if (overlap_between.first > 0 and overlap_between.first < F){
+											outoverlap += 2;
+										}
 									}
 								}
 								setlive(live()-inoverlap+outoverlap);
@@ -275,6 +282,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 		}
 	}
 }
+
 
 void Sim_Axelrod::reset()		/* creates a specific strategy distribution across the grid */
 {
@@ -358,7 +366,6 @@ void Sim_Axelrod::reset()		/* creates a specific strategy distribution across th
 			if (i == width()-1 and j == width()-1){
 				neighbors.push_back(& at(i, j-1));
 				neighbors.push_back(& at(i-1, j));
-				neighbors.push_back(& at(i-1, j+1));
 				neighbors.push_back(& at(i-1, j-1));
 			}
 			for (Datapoint * const neighbor : neighbors) {
@@ -367,10 +374,12 @@ void Sim_Axelrod::reset()		/* creates a specific strategy distribution across th
 					setlive(live()+1);
 				}
 			}
-			for (const auto& neighbor: dp->virneighbors()) {
-				std::pair<Datapoint::attribute_t, std::vector<Datapoint::attribute_t>> overlap_between = dp->overlap(dp, neighbor);
-				if (overlap_between.first > 0 and overlap_between.first < F){
-					setlive(live()+1);
+			if (virint > 0){
+				for (const auto& neighbor: dp->virneighbors()) {
+					std::pair<Datapoint::attribute_t, std::vector<Datapoint::attribute_t>> overlap_between = dp->overlap(dp, neighbor);
+					if (overlap_between.first > 0 and overlap_between.first < F){
+						setlive(live()+1);
+					}
 				}
 			}
 		}
@@ -380,7 +389,7 @@ void Sim_Axelrod::reset()		/* creates a specific strategy distribution across th
 
 size_t Sim_Axelrod::returnSpecies()
 {
-	return Ns;
+	return 0;
 }
 
 size_t Sim_Axelrod::stepTargetNumber() const

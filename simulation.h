@@ -82,6 +82,7 @@ public:
 	SimParameter startselect{"StartSelect", 1, "Initial configuration. 1: random 2: interface 3: interfaces 4: island 5: island 6: empty 7: tilted interface 8: tilted interfaces"}; /*this is used to choose the initial state*/
 	//void reconnect(uint8_t ctype);
 	std::vector<std::vector<size_t>> _neighborList;
+	SimParameter _runs{"runs", 1, "number of runs in a data collection step"};
 private:
 	std::vector<Datapoint> _data; /*declaration of the vector that records the data of the simulation*/
 	std::vector<QColor> _palette; /* declaration of the color table */
