@@ -67,7 +67,7 @@ Sim_Axelrod::Sim_Axelrod(size_t width)
 
 std::vector<SimParameter> Sim_Axelrod::parameters()
 {
-	return {F, q, virint, _runs};		/* UC: adjust this list to only show the parameters you actually have in your simulation. */
+	return {F, q, virint, _runs, virfor, physfor};		/* UC: adjust this list to only show the parameters you actually have in your simulation. */
 }
 
 uint32_t Sim_Axelrod::animationDelay() const
@@ -179,7 +179,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 						std::uniform_int_distribution<uint64_t> sizeDist(0, neighbors.size()-1);
 						Datapoint* neighbor = neighbors[sizeDist(rng)];
 						auto overlap_between = dp->overlap(dp, neighbor);
-						if (overlap_between.first > 0 and overlap_between.first < F){
+						if ((overlap_between.first > 0 and overlap_between.first < F) or (realDist(rng) < physfor and overlap_between.first < F)){
 							if (realDist(rng) > overlap_between.first/F) {
 								Datapoint::attribute_t inoverlap = 0;
 								for (Datapoint * const neighbor : neighbors) {
@@ -233,7 +233,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 						std::uniform_int_distribution<uint64_t> sizeDist(0, dp->virneighbors().size()-1);
 						Datapoint* neighbor = virneighborlist[sizeDist(rng)];
 						auto overlap_between = dp->overlap(dp, neighbor);
-						if (overlap_between.first > 0 and overlap_between.first < F){
+						if ((overlap_between.first > 0 and overlap_between.first < F) or (realDist(rng) < virfor and overlap_between.first < F)){
 							if (realDist(rng) > overlap_between.first/F) {
 								Datapoint::attribute_t inoverlap = 0;
 								for (Datapoint * const neighbor : neighbors) {
