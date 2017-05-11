@@ -13,6 +13,8 @@ public:
 	Datapoint() = default;
 	Datapoint(std::vector<attribute_t> attributes, std::unordered_set<Datapoint*> virneighbors, culture_t culture);
 	inline std::vector<attribute_t> & attributes() { return _attributes; }
+	inline std::unordered_set<Datapoint*> & influence() { return _influence; }
+	inline std::unordered_set<Datapoint*> const & influence() const { return _influence; }
 	inline std::vector<attribute_t> const & attributes() const { return _attributes; }
 	inline std::unordered_set<Datapoint*> & virneighbors() { return _virneighbors; }
 	inline std::unordered_set<Datapoint*> const & virneighbors() const { return _virneighbors; }
@@ -23,6 +25,7 @@ public:
 	std::pair<attribute_t, std::vector<attribute_t>> overlap(Datapoint* target, Datapoint* neighbor);
 private:
 	std::vector<attribute_t> _attributes;
+	std::unordered_set<Datapoint*> _influence;
 	std::unordered_set<Datapoint*> _virneighbors;
 	culture_t _culture;
 };

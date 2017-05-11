@@ -25,11 +25,15 @@ public:
 	inline void setlive(size_t input) { _live = input; }
 	inline const Datapoint& virtuals(size_t i) const { return _virtuals[i]; }
 	inline Datapoint& virtuals(size_t i) { return _virtuals[i]; }
+	inline std::vector<Datapoint> virtuals() { return _virtuals; }
 	inline void add_virtual(Datapoint input) {_virtuals.push_back(input);}
 	inline void clear_virtuals() {_virtuals.clear();}
 	void setup_virtuals();
+	void setup_virtuals2(size_t num);
+	void setup_virtuals3(size_t num);
 	void initialize_media();
 	void update_virtuals();
+	void update_virtuals3();
 	void virtual_connections();
 	void update_virconnects();
 
@@ -37,8 +41,10 @@ private:
 	SimParameter F{"F", 4, "Number of features"};
 	SimParameter q{"q", 6, "Number of traits per feature"};
 	SimParameter virint{"virint", 0.0, "Probability of virtual interaction"};
-	SimParameter virfor{"virfor", 0.2, "Probability of forced virtual interaction"};
+	SimParameter virfor{"virfor", 0.0, "Probability of forced virtual interaction"};
 	SimParameter physfor{"physfor", 0.0, "Probability of forced physical interaction"};
+	SimParameter remprob{"remprob", 0.0, "Probability of removing differing virtual neighbors"};
+	SimParameter addprob{"addprob", 0.0, "Probability of adding similar virtual neighbors"};
 	size_t _live = 0;
 	std::vector<Datapoint> _virtuals;
 };
