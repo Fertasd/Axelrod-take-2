@@ -108,84 +108,78 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 		thread_local std::mt19937_64 rng(std::random_device{}());
 		std::uniform_real_distribution<double> realDist(0, 1);
 		#pragma omp parallel for
-		for (size_t i = 0; i < width(); i++)
-		{
-			for (size_t j = 0; j < width(); j++)
-			{
-				if (realDist(rng) > 0.2)
+		for (size_t i = 0; i < width(); i++) {
+			for (size_t j = 0; j < width(); j++) {
+				Datapoint* dp = & at(i,j);
+				std::vector<Datapoint*> neighbors = findneighbors(i,j);
+				if (realDist(rng) > virint)
 				{
-					Datapoint* dp = & at(i,j);
-					std::vector<Datapoint*> neighbors = findneighbors(i,j);
-					if (realDist(rng) > virint)
-					{
-						std::uniform_int_distribution<uint64_t> sizeDist(0, neighbors.size()-1);
-						Datapoint* neighbor = neighbors[sizeDist(rng)];
-						auto overlap_between = dp->overlap(dp, neighbor);
-						if ((overlap_between.first > 0 and overlap_between.first < F) or (realDist(rng) < physfor and overlap_between.first < F)){
-							if (realDist(rng) > overlap_between.first/F) {
-								std::uniform_int_distribution<uint64_t> ovlDist(0, overlap_between.second.size()-1);
-								auto switchat = overlap_between.second[ovlDist(rng)];
-								dp->attributes()[switchat] = neighbor->attributes()[switchat];
-								if (_counter[dp->culture()] > 1){
-									_counter[dp->culture()] -=1;
-								}
-								else{
-									_counter.erase(dp->culture());
-								}
-								Datapoint::culture_t culture = 0;
-								for (uint8_t j = 0; j < F; j++)
-									culture += dp->attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
-								dp->set_culture(culture);
-								if (_counter.count(culture)) {
-									_counter[culture] = _counter[culture] + 1;
-								} else {
-									_counter[culture] = 1;
-								}
+					std::uniform_int_distribution<uint64_t> sizeDist(0, neighbors.size()-1);
+					Datapoint* neighbor = neighbors[sizeDist(rng)];
+					auto overlap_between = dp->overlap(dp, neighbor);
+					if ((overlap_between.first > 0 and overlap_between.first < F) or (realDist(rng) < physfor and overlap_between.first < F)){
+						if (realDist(rng) > overlap_between.first/F) {
+							std::uniform_int_distribution<uint64_t> ovlDist(0, overlap_between.second.size()-1);
+							auto switchat = overlap_between.second[ovlDist(rng)];
+							dp->attributes()[switchat] = neighbor->attributes()[switchat];
+							if (_counter[dp->culture()] > 1){
+								_counter[dp->culture()] -=1;
+							}
+							else{
+								_counter.erase(dp->culture());
+							}
+							Datapoint::culture_t culture = 0;
+							for (uint8_t j = 0; j < F; j++)
+								culture += dp->attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
+							dp->set_culture(culture);
+							if (_counter.count(culture)) {
+								_counter[culture] = _counter[culture] + 1;
+							} else {
+								_counter[culture] = 1;
 							}
 						}
-
-
 					}
-					else {
-						Datapoint* dp = & at(i,j);
-						std::vector<Datapoint*> virneighborlist;
-						for (const auto& element: dp->virneighbors()){
-							virneighborlist.push_back(element);
-						}
-						std::uniform_int_distribution<uint64_t> sizeDist(0, dp->virneighbors().size()-1);
-						Datapoint* neighbor = virneighborlist[sizeDist(rng)];
-						auto overlap_between = dp->overlap(dp, neighbor);
-						if ((overlap_between.first > 0 and overlap_between.first < F) or (realDist(rng) < virfor and overlap_between.first < F)){
-							if (realDist(rng) > overlap_between.first/F) {
-								std::uniform_int_distribution<uint64_t> ovlDist(0, overlap_between.second.size()-1);
-								auto switchat = overlap_between.second[ovlDist(rng)];
-								dp->attributes()[switchat] = neighbor->attributes()[switchat];
-								Datapoint::culture_t culture = 0;
-								for (uint8_t j = 0; j < F; j++)
-									culture += dp->attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
-								if (_counter[dp->culture()] > 1){
-									_counter[dp->culture()] -=1;
-								}
-								else{
-									_counter.erase(dp->culture());
-								}
-								dp->set_culture(culture);
-								if (_counter.count(culture)) {
-									_counter[culture] = _counter[culture] + 1;
-								} else {
-									_counter[culture] = 1;
-								}
+
+
+				}
+				else {
+					Datapoint* dp = & at(i,j);
+					std::vector<Datapoint*> virneighborlist;
+					for (const auto& element: dp->virneighbors()){
+						virneighborlist.push_back(element);
+					}
+					std::uniform_int_distribution<uint64_t> sizeDist(0, dp->virneighbors().size()-1);
+					Datapoint* neighbor = virneighborlist[sizeDist(rng)];
+					auto overlap_between = dp->overlap(dp, neighbor);
+					if ((overlap_between.first > 0 and overlap_between.first < F) or (realDist(rng) < virfor and overlap_between.first < F)){
+						if (realDist(rng) > overlap_between.first/F) {
+							std::uniform_int_distribution<uint64_t> ovlDist(0, overlap_between.second.size()-1);
+							auto switchat = overlap_between.second[ovlDist(rng)];
+							dp->attributes()[switchat] = neighbor->attributes()[switchat];
+							Datapoint::culture_t culture = 0;
+							for (uint8_t j = 0; j < F; j++)
+								culture += dp->attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
+							if (_counter[dp->culture()] > 1){
+								_counter[dp->culture()] -=1;
+							}
+							else{
+								_counter.erase(dp->culture());
+							}
+							dp->set_culture(culture);
+							if (_counter.count(culture)) {
+								_counter[culture] = _counter[culture] + 1;
+							} else {
+								_counter[culture] = 1;
 							}
 						}
-
 					}
 				}
 			}
 		}
-		update_clusters();
-		update_virtuals();
-		calculate_live();
 	}
+	update_clusters();
+	update_virtuals();
+	calculate_live();
 }
 
 
@@ -446,15 +440,15 @@ void Sim_Axelrod::update_clusters()
 
 					}
 					if (realDist(rng) < addprob){
-						size_t i = 0;
-						for ( Datapoint virt2 : virtuals()) {
+						size_t i3 = 0;
+						for ( Datapoint virt2 : _virtuals) {
 							if (dp->overlap(dp, & virt2).first > 1 and dp->overlap(dp, & virt2).first < F) {
 								dp->virneighbors().insert(& virt2);
 								virt2.influence().insert(dp);
+								i3 +=1;
+								if (i3 == addnum)
+									break;
 							}
-							i +=1;
-							if (i == addnum)
-								break;
 						}
 					}
 				}
