@@ -128,9 +128,9 @@ MainWindow::MainWindow(QWidget *parent)
 		timer->stop();
 		for (size_t i = 0; i < session.renderFrameSkip() && shouldSimulate; ++i)
 		{
-			session.simulation()->step(); /* do a certain number of simulation steps */
+			session.simulation()->step(); /* do a certain number of simulation steps */			
 			QApplication::processEvents();
-		}
+		}		
 		image->update();		/* display the current state of the simulation */
 		if (shouldSimulate)
 			timer->start();
@@ -149,33 +149,46 @@ MainWindow::MainWindow(QWidget *parent)
 	}); /* connects the clicked() event of the reset button with a series of events: the timer stops, the simulation is reset and displayed */
 
 	connect(analButton, &QPushButton::clicked, [=]{
-		std::string retString = "collect_";
+		/*std::string retString = "collect_";
 		retString.append(session.simulation()->getName());
 		auto date = static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 		auto date2 = std::to_string(date);
 		retString.append(date2);
-		retString.append(".dat");
-		std::ofstream f(retString);
-		SIM_USERASSERT_M(f.is_open(), "Cannot open " + retString);
-		f << "\n";
+		retString.append(".dat");*/
 		for (uint8_t iter = 0; iter < session.simulation()->_runs; iter++){
-		std::unordered_set<Datapoint::culture_t> results;
-		session.simulation()->reset();
-		while(session.simulation()->live() > 0){
-			QApplication::processEvents();
-			session.simulation()->step();
+			session.simulation()->reset();
+			std::ofstream ofs;
+			ofs.open("numberofcultures.dat", std::ofstream::out | std::ofstream::trunc);
+			SIM_USERASSERT_M(ofs.is_open(), "Cannot open numberofcultures.dat");
+			ofs.close();
+			std::ofstream of;
+			of.open("largestculture.dat", std::ofstream::out | std::ofstream::trunc);
+			SIM_USERASSERT_M(of.is_open(), "Cannot open largestculture.dat");
+			of.close();
+			while(session.simulation()->live() > 0){
+				QApplication::processEvents();
+				session.simulation()->step();
+				std::ofstream f;
+				std::ofstream g;
+				g.open ("largestculture.dat", std::ofstream::out | std::ofstream::app);
+				f.open ("numberofcultures.dat", std::ofstream::out | std::ofstream::app);
+				SIM_USERASSERT_M(f.is_open(), "Cannot open numberofcultures.dat");
+				SIM_USERASSERT_M(g.is_open(), "Cannot open largestculture.dat");
+				size_t cultsize = session.simulation()->_counter.size();
+				f << cultsize << "\n";
+				size_t maxsize = 0;
+				for (auto cult : session.simulation()->_counter){
+					if (cult.second > maxsize)
+						maxsize = cult.second;
+				}
+				g << maxsize << "\n";
+				f.close();
+				g.close();
+			}
 		}
-		for (size_t i = 0; i < session.simulation()->width(); i++)
-			for (size_t j = 0; j < session.simulation()->width(); j++)
-				results.insert(session.simulation()->at(i,j).culture());
-		size_t ret = results.size();
-		f << ret;
-		f << "\n";
-		}
-		f.close();
 		QApplication::processEvents();
 		QMessageBox::information(this, "Notice", "Data collection finished");
 		QApplication::processEvents();
-		 });
+		});
 
 }

@@ -2,6 +2,7 @@
 #include <functional>
 #include <memory>
 #include <unordered_set>
+#include <unordered_map>
 #include <vector>
 #include <QColor>
 
@@ -86,8 +87,9 @@ public:
 	//void reconnect(uint8_t ctype);
 	std::vector<std::vector<size_t>> _neighborList;
 	SimParameter _runs{"runs", 1, "number of runs in a data collection step"};
+	std::unordered_map<size_t, size_t> _counter;
 private:
 	std::vector<Datapoint> _data; /*declaration of the vector that records the data of the simulation*/
 	std::vector<QColor> _palette; /* declaration of the color table */
-	size_t _width;				/* declaration of size length of the simulation */
+	size_t _width;				/* declaration of size length of the simulation */	
 };
