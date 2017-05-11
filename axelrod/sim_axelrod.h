@@ -8,7 +8,7 @@
 class Sim_Axelrod final : public Simulation
 {
 public:
-	Sim_Axelrod(size_t width = 10);								/*UC: declares a simulation with given width */
+	Sim_Axelrod(size_t width = 3);								/*UC: declares a simulation with given width */
 	inline constexpr static auto name() { return "Axelrod"; }	/*UC: returns the name of the simulation */
 	std::vector<SimParameter> parameters() override;
 	uint32_t animationDelay() const override;
@@ -49,7 +49,7 @@ private:
 	SimParameter remprob{"remprob", 0.0, "Probability of removing differing virtual neighbors"};
 	SimParameter addprob{"addprob", 0.0, "Probability of adding similar virtual neighbors"};
 	SimParameter addnum{"addnum",1,"number of global agents connected in a single update"};
-	SimParameter numglobal{"numglobal", 1, "number of global agents"};
+	SimParameter numglobal{"numglobal", 5, "number of global agents"};
 	size_t _live = 0;
 	std::vector<Datapoint> _virtuals;
 };

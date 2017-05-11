@@ -430,30 +430,32 @@ void Sim_Axelrod::update_clusters()
 		for (size_t j = 0; j < width(); j++) {
 			std::mt19937_64 rng(std::random_device{}());
 			std::uniform_real_distribution<double> realDist(0, 1);
+			Datapoint* dp = & at(i,j);
 			for ( auto& virt : at(i,j).virneighbors()){
-				Datapoint* dp = & at(i,j);
 				auto overlap_between = dp->overlap(dp, virt);
 				if (overlap_between.first == 0 and virt->influence().size() > 0){
-					if (realDist(rng) < remprob){
-						dp->virneighbors().erase(virt);
-						virt->influence().erase(dp);
-
+					dp->virneighbors().erase(virt);
+					virt->influence().erase(dp);
+				}
+			}
+			size_t maxoverlap = 0;
+			std::unordered_set<Datapoint*> maxglobals;
+			for ( Datapoint virt2 : _virtuals) {
+				if (dp->overlap(dp, & virt2).first >= maxoverlap and dp->overlap(dp, & virt2).first < F) {
+					if (dp->overlap(dp, & virt2).first == maxoverlap) {
+						maxglobals.insert(& virt2);
 					}
-					if (realDist(rng) < addprob){
-						size_t i3 = 0;
-						for ( Datapoint virt2 : _virtuals) {
-							if (dp->overlap(dp, & virt2).first > 1 and dp->overlap(dp, & virt2).first < F) {
-								dp->virneighbors().insert(& virt2);
-								virt2.influence().insert(dp);
-								i3 +=1;
-								if (i3 == addnum)
-									break;
-							}
-						}
+					else{
+						maxoverlap = dp->overlap(dp, & virt2).first;
+						maxglobals.clear();
+						maxglobals.insert(& virt2);
 					}
 				}
 			}
-
+			for (Datapoint* global : maxglobals){
+				dp->virneighbors().insert(global);
+				global->influence().insert(dp);
+			}
 		}
 	}
 }
