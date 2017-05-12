@@ -159,7 +159,6 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 							Datapoint::culture_t culture = 0;
 							for (uint8_t j = 0; j < F; j++)
 								culture += dp->attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
-							dp->set_culture(culture);
 							if (_counter[dp->culture()] > 1){
 								_counter[dp->culture()] -=1;
 							}
@@ -181,6 +180,11 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 	update_clusters();
 	update_virtuals();
 	calculate_live();
+	if (virfor > 0 and live() == 0) {
+		if (_counter.size() > 1) {
+			setlive(1);
+		}
+	}
 }
 
 

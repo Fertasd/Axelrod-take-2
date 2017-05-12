@@ -8,7 +8,7 @@
 class Sim_Axelrod final : public Simulation
 {
 public:
-	Sim_Axelrod(size_t width = 5);								/*UC: declares a simulation with given width */
+	Sim_Axelrod(size_t width = 12);								/*UC: declares a simulation with given width */
 	inline constexpr static auto name() { return "Axelrod"; }	/*UC: returns the name of the simulation */
 	std::vector<SimParameter> parameters() override;
 	uint32_t animationDelay() const override;
@@ -41,15 +41,15 @@ public:
 	std::vector<Datapoint*> findneighbors(size_t i, size_t j);
 
 private:
-	SimParameter F{"F", 2, "Number of features"};
-	SimParameter q{"q", 3, "Number of traits per feature"};
+	SimParameter F{"F", 3, "Number of features"};
+	SimParameter q{"q", 8, "Number of traits per feature"};
 	SimParameter virint{"virint", 0.2, "Probability of virtual interaction"};
-	SimParameter virfor{"virfor", 0.0, "Probability of forced virtual interaction"};
+	SimParameter virfor{"virfor", 0.00, "Probability of forced virtual interaction"};
 	SimParameter physfor{"physfor", 0.0, "Probability of forced physical interaction"};
 	SimParameter remprob{"remprob", 0.0, "Probability of removing differing virtual neighbors"};
 	SimParameter addprob{"addprob", 0.0, "Probability of adding similar virtual neighbors"};
 	SimParameter addnum{"addnum",1,"number of global agents connected in a single update"};
-	SimParameter numglobal{"numglobal", 5, "number of global agents"};
+	SimParameter numglobal{"numglobal", 1, "number of global agents"};
 	size_t _live = 0;
 	std::vector<Datapoint> _virtuals;
 };
