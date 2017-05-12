@@ -159,6 +159,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 							Datapoint::culture_t culture = 0;
 							for (uint8_t j = 0; j < F; j++)
 								culture += dp->attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
+							dp->set_culture(culture);
 							if (_counter[dp->culture()] > 1){
 								_counter[dp->culture()] -=1;
 							}
@@ -327,28 +328,30 @@ void Sim_Axelrod::initialize_media()
 
 void Sim_Axelrod::update_virtuals()
 {
-	for (Datapoint virt : virtuals()){
-		for (Datapoint::attribute_t attr = 0; attr < F; attr++) {
-			std::vector<Datapoint::culture_t> entries;
-			Datapoint::culture_t mostfrequent;
-			size_t freq;
-			for (Datapoint* target : virt.influence()){
-				entries.push_back(target->attributes()[attr]);
-			}
-			mostfrequent = entries[0];
-			freq = std::count(entries.begin(), entries.end(), entries[0]);
-			for (size_t iter = 0; iter < entries.size(); iter++) {
-				if (static_cast<size_t>(std::count(entries.begin(), entries.end(), entries[iter])) > freq) {
-					mostfrequent = entries[iter];
-					freq = std::count(entries.begin(), entries.end(), entries[iter]);
+	for (Datapoint virt : virtuals()) {
+		if (virt.influence().size() > 0) {
+			for (Datapoint::attribute_t attr = 0; attr < F; attr++) {
+				std::vector<Datapoint::culture_t> entries;
+				Datapoint::culture_t mostfrequent;
+				size_t freq;
+				for (Datapoint* target : virt.influence()){
+					entries.push_back(target->attributes()[attr]);
 				}
+				mostfrequent = entries[0];
+				freq = std::count(entries.begin(), entries.end(), entries[0]);
+				for (size_t iter = 0; iter < entries.size(); iter++) {
+					if (static_cast<size_t>(std::count(entries.begin(), entries.end(), entries[iter])) > freq) {
+						mostfrequent = entries[iter];
+						freq = std::count(entries.begin(), entries.end(), entries[iter]);
+					}
+				}
+				virt.attributes()[attr] = mostfrequent;
 			}
-			virt.attributes()[attr] = mostfrequent;
+			Datapoint::culture_t culture = 0;
+			for (uint8_t j = 0; j < F; j++)
+				culture += virt.attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
+			virt.set_culture(culture);
 		}
-		Datapoint::culture_t culture = 0;
-		for (uint8_t j = 0; j < F; j++)
-			culture += virt.attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
-		virt.set_culture(culture);
 	}
 }
 
@@ -431,16 +434,20 @@ void Sim_Axelrod::update_clusters()
 			std::mt19937_64 rng(std::random_device{}());
 			std::uniform_real_distribution<double> realDist(0, 1);
 			Datapoint* dp = & at(i,j);
-			for ( auto& virt : at(i,j).virneighbors()){
+			std::unordered_set<Datapoint*> deathrow;
+			for ( Datapoint* virt : dp->virneighbors()){
 				auto overlap_between = dp->overlap(dp, virt);
 				if (overlap_between.first == 0 and virt->influence().size() > 0){
-					dp->virneighbors().erase(virt);
+					deathrow.insert(virt);
 					virt->influence().erase(dp);
 				}
 			}
+			for (Datapoint* row : deathrow){
+				dp->virneighbors().erase(row);
+			}
 			size_t maxoverlap = 0;
 			std::unordered_set<Datapoint*> maxglobals;
-			for ( Datapoint virt2 : _virtuals) {
+			for ( Datapoint& virt2 : _virtuals) {
 				if (dp->overlap(dp, & virt2).first >= maxoverlap and dp->overlap(dp, & virt2).first < F) {
 					if (dp->overlap(dp, & virt2).first == maxoverlap) {
 						maxglobals.insert(& virt2);
@@ -468,59 +475,43 @@ std::vector<Datapoint*> Sim_Axelrod::findneighbors(size_t i, size_t j)
 		neighbors.push_back(& at(i, j-1));
 		neighbors.push_back(& at(i+1, j));
 		neighbors.push_back(& at(i-1, j));
-		neighbors.push_back(& at(i+1, j+1));
-		neighbors.push_back(& at(i-1, j+1));
-		neighbors.push_back(& at(i+1, j-1));
-		neighbors.push_back(& at(i-1, j-1));
 	}
 	if (i == 0 and j != 0 and j != width()-1){
 		neighbors.push_back(& at(i, j+1));
 		neighbors.push_back(& at(i, j-1));
 		neighbors.push_back(& at(i+1, j));
-		neighbors.push_back(& at(i+1, j+1));
-		neighbors.push_back(& at(i+1, j-1));
 	}
 	if (j == 0 and i != 0 and i != width()-1){
 		neighbors.push_back(& at(i, j+1));
 		neighbors.push_back(& at(i+1, j));
 		neighbors.push_back(& at(i-1, j));
-		neighbors.push_back(& at(i+1, j+1));
-		neighbors.push_back(& at(i-1, j+1));
 	}
 	if (j == width()-1 and i != 0 and i != width()-1){
 		neighbors.push_back(& at(i, j-1));
 		neighbors.push_back(& at(i+1, j));
 		neighbors.push_back(& at(i-1, j));
-		neighbors.push_back(& at(i+1, j-1));
-		neighbors.push_back(& at(i-1, j-1));
 	}
 	if (i == width()-1 and j != 0 and j != width()-1){
 		neighbors.push_back(& at(i, j+1));
 		neighbors.push_back(& at(i, j-1));
 		neighbors.push_back(& at(i-1, j));
-		neighbors.push_back(& at(i-1, j+1));
-		neighbors.push_back(& at(i-1, j-1));
 
 	}
 	if (i == 0 and j == 0){
 		neighbors.push_back(& at(i, j+1));
 		neighbors.push_back(& at(i+1, j));
-		neighbors.push_back(& at(i+1, j+1));
 	}
 	if (i == 0 and j == width()-1){
 		neighbors.push_back(& at(i, j-1));
 		neighbors.push_back(& at(i+1, j));
-		neighbors.push_back(& at(i+1, j-1));
 	}
 	if (i == width()-1 and j == 0){
 		neighbors.push_back(& at(i, j+1));
 		neighbors.push_back(& at(i-1, j));
-		neighbors.push_back(& at(i-1, j+1));
 	}
 	if (i == width()-1 and j == width()-1){
 		neighbors.push_back(& at(i, j-1));
 		neighbors.push_back(& at(i-1, j));
-		neighbors.push_back(& at(i-1, j-1));
 	}
 	return neighbors;
 }
