@@ -7,6 +7,8 @@ TEMPLATE = app
 msvc:QMAKE_CXXFLAGS_RELEASE += /openmp
 gcc:QMAKE_CXXFLAGS_RELEASE += -O3 -march=native -fopenmp -D_GLIBCXX_PARALLEL
 gcc:QMAKE_LFLAGS_RELEASE += -fopenmp
+gcc:QMAKE_CXXFLAGS += -Wall -Wextra -pedantic -Wshadow -Wfloat-conversion
+clang:QMAKE_CXXFLAGS += -Weverything -Wno-c++98-compat -Wno-weak-vtables -Wno-padded -Wno-undefined-reinterpret-cast -Wno-source-uses-openmp
 
 SOURCES += main.cpp\
     simulation.cpp \

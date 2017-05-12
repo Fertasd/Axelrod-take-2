@@ -7,6 +7,7 @@
 class SimulationWrapper
 {
 public:
+	virtual ~SimulationWrapper() = default;
 	virtual const char* name() const = 0;
 	virtual const std::shared_ptr<Simulation>& get() = 0;
 };

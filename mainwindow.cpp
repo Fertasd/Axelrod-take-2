@@ -39,11 +39,11 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(&session, &SimulationSession::displayWidthChanged, [=](size_t dpw){
 		shouldSimulate = false;
 		timer->stop();
-		image->setDisplayWidth(dpw);
+		image->setDisplayWidth(checked_cast<int>(dpw));
 		image->update();
 	});
 
-	connect(&session, &SimulationSession::connectionTypeChanged, [=](size_t ctype){
+	connect(&session, &SimulationSession::connectionTypeChanged, [=](uint8_t ctype){
 		shouldSimulate = false;
 		timer->stop();
 		//session.simulation()->reconnect(ctype);

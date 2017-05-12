@@ -1,6 +1,7 @@
 #include "sim_axelrod.h"
 #include <functional>
 #include <random>
+#include "utils.h"
 
 /* UC stands for user-controlled, modify the values in these rows to tailor the simulation to your needs */
 
@@ -62,7 +63,6 @@ Sim_Axelrod::Sim_Axelrod(size_t width)
 	palette().emplace_back(0xFF457299);
 	palette().emplace_back(0xFF661f58);
 
-
 	reset();		/* assigns the initial state to the simulation */
 }
 
@@ -107,7 +107,7 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 	{
 		thread_local std::mt19937_64 rng(std::random_device{}());
 		std::uniform_real_distribution<double> realDist(0, 1);
-		#pragma omp parallel for
+		#pragma omp parallel for collapse(2)
 		for (size_t i = 0; i < width(); i++) {
 			for (size_t j = 0; j < width(); j++) {
 				Datapoint* dp = & at(i,j);
@@ -187,7 +187,6 @@ void Sim_Axelrod::step()		/* defines a simulation step */
 	}
 }
 
-
 void Sim_Axelrod::reset()		/* creates a specific strategy distribution across the grid */
 {
 	setlive(0);
@@ -213,12 +212,11 @@ void Sim_Axelrod::reset()		/* creates a specific strategy distribution across th
 			}
 		}
 	}
-	setup_virtuals2(numglobal);
+	setup_virtuals2(checked_cast<size_t>(numglobal.value()));
 	//setup_virtuals3(3);
 	initialize_media();
 	calculate_live();
 }
-
 
 size_t Sim_Axelrod::returnSpecies()
 {
@@ -271,11 +269,11 @@ void Sim_Axelrod::setup_virtuals2(size_t num)
 		add_virtual(dp);
 	}
 	std::mt19937_64 rng(std::random_device{}());
-	std::uniform_int_distribution<int> listDist(0, _virtuals.size() - 1);
+	std::uniform_int_distribution<size_t> listDist(0, _virtuals.size() - 1);
 	for (size_t i = 0; i < width(); i++) {
 		for (size_t j = 0; j < width(); j++) {
 			at(i,j).virneighbors().clear();
-			int index = listDist(rng);
+			size_t const index = listDist(rng);
 			at(i,j).virneighbors().insert(& virtuals(index));
 			virtuals(index).influence().insert(& at(i,j));
 		}
@@ -312,23 +310,22 @@ void Sim_Axelrod::initialize_media()
 				entries.push_back(target->attributes()[attr]);
 			}
 			mostfrequent = entries[0];
-			freq = std::count(entries.begin(), entries.end(), entries[0]);
-			for (size_t iter = 0; iter < entries.size(); iter++) {
-				if (static_cast<size_t>(std::count(entries.begin(), entries.end(), entries[iter])) > freq) {
+			freq = as_unsigned(std::count(entries.begin(), entries.end(), entries[0]));
+			for (size_t iter = 0; iter < entries.size(); ++iter) {
+				size_t const count = as_unsigned(std::count(entries.begin(), entries.end(), entries[iter]));
+				if (count > freq) {
 					mostfrequent = entries[iter];
-					freq = std::count(entries.begin(), entries.end(), entries[iter]);
+					freq = count;
 				}
 			}
 			virt.attributes()[attr] = mostfrequent;
 		}
 		Datapoint::culture_t culture = 0;
 		for (uint8_t j = 0; j < F; j++)
-			culture += virt.attributes()[j] * static_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
+			culture += virt.attributes()[j] * checked_cast<Datapoint::culture_t>(std::pow(q, F-1-j));
 		virt.set_culture(culture);
 	}
 }
-
-
 
 void Sim_Axelrod::update_virtuals()
 {
@@ -342,11 +339,12 @@ void Sim_Axelrod::update_virtuals()
 					entries.push_back(target->attributes()[attr]);
 				}
 				mostfrequent = entries[0];
-				freq = std::count(entries.begin(), entries.end(), entries[0]);
+				freq = as_unsigned(std::count(entries.begin(), entries.end(), entries[0]));
 				for (size_t iter = 0; iter < entries.size(); iter++) {
-					if (static_cast<size_t>(std::count(entries.begin(), entries.end(), entries[iter])) > freq) {
+					size_t const count = as_unsigned(std::count(entries.begin(), entries.end(), entries[iter]));
+					if (count > freq) {
 						mostfrequent = entries[iter];
-						freq = std::count(entries.begin(), entries.end(), entries[iter]);
+						freq = count;
 					}
 				}
 				virt.attributes()[attr] = mostfrequent;
@@ -390,8 +388,6 @@ void Sim_Axelrod::update_virtuals3()
 		}
 	}
 }
-
-
 
 void Sim_Axelrod::virtual_connections()
 {
@@ -519,4 +515,3 @@ std::vector<Datapoint*> Sim_Axelrod::findneighbors(size_t i, size_t j)
 	}
 	return neighbors;
 }
-

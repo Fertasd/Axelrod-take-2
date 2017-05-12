@@ -1,7 +1,7 @@
 #include <QtWidgets>
+#include "utils.h"
 #include "datacollectiontoolbox.h"
 #include "DataCollector.h"
-
 #include "simparameterwidget.h"
 #include "overloadselector.h"
 
@@ -30,9 +30,8 @@ DataCollectionToolbox::DataCollectionToolbox(std::shared_ptr<Simulation> sim, QW
 
 		_collector = new DataCollector;
 		_collector->setSimulation(_simulation);
-		connect(parameterlist, &QListWidget::currentRowChanged, [=](double newValue){
-			_collector->setParameter(paramlist[newValue]);
-
+		connect(parameterlist, &QListWidget::currentRowChanged, [=](int newValue){
+			_collector->setParameter(paramlist[to_unsigned(newValue)]);
 		});
 
 		windowLayout->addWidget(parameterlist);
